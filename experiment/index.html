@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>音声環境識別実験</title>
+        <style>
+            body {
+                font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                padding: 20px;
+                max-width: 800px;
+                margin: 0 auto;
+                color: #333;
+            }
+            .section {
+                display: none;
+                margin-top: 20px;
+            }
+            .active {
+                display: block;
+            }
+            h1 {
+                color: #2c3e50;
+                margin-bottom: 20px;
+            }
+            button {
+                background-color: #2c3e50;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                margin: 5px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.3s;
+            }
+            button:hover {
+                background-color: #2980b9;
+            }
+            button:disabled {
+                background-color: #95a5a6;
+                cursor: not-allowed;
+            }
+            .rating-scale {
+                display: flex;
+                justify-content: space-between;
+                margin: 20px 0;
+                width: 100%;
+            }
+            .rating-option {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 18%;
+            }
+            .rating-button {
+                width: 100%;
+            }
+            .progress-container {
+                width: 100%;
+                background-color: #ecf0f1;
+                height: 20px;
+                margin: 20px 0;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+            .progress-bar {
+                height: 100%;
+                background-color: #2ecc71;
+                width: 0%;
+                transition: width 0.3s;
+            }
+            .trial-info {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 10px;
+            }
+            .audio-progress {
+                width: 100%;
+                height: 10px;
+                background-color: #ecf0f1;
+                margin: 10px 0;
+                border-radius: 5px;
+                overflow: hidden;
+                position: relative;
+            }
+            .audio-progress-bar {
+                height: 100%;
+                background-color: #e74c3c;
+                width: 0%;
+                transition: width 0.1s linear;
+            }
+            .audio-progress-segment {
+                position: absolute;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.1);
+                border-right: 2px solid #7f8c8d;
+            }
+
+            .segment-labels {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 5px;
+                font-size: 14px;
+            }
+            .results-container {
+                margin-top: 20px;
+            }
+            .result-item {
+                margin-bottom: 10px;
+                padding: 10px;
+                background-color: #f9f9f9;
+                border-radius: 4px;
+            }
+            .correct {
+                border-left: 4px solid #2ecc71;
+            }
+            .incorrect {
+                border-left: 4px solid #e74c3c;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+            }
+            th,
+            td {
+                padding: 10px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            .loading {
+                text-align: center;
+                margin: 20px 0;
+            }
+            .spinner {
+                border: 4px solid rgba(0, 0, 0, 0.1);
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border-left-color: #3498db;
+                animation: spin 1s linear infinite;
+                display: inline-block;
+            }
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+            .error {
+                color: #e74c3c;
+                padding: 10px;
+                background-color: #fadbd8;
+                border-radius: 4px;
+                margin: 10px 0;
+            }
+            .segment-timeline {
+                display: flex;
+                width: 100%;
+                margin-top: 5px;
+                height: 30px;
+                position: relative;
+            }
+            .timeline-segment {
+                position: relative;
+                height: 20px;
+                text-align: center;
+                color: white;
+                font-weight: bold;
+                padding-top: 5px;
+                border-radius: 3px;
+            }
+            .timeline-silence {
+                background-color: #bdc3c7;
+                position: relative;
+                height: 20px;
+                text-align: center;
+                padding-top: 5px;
+                font-size: 12px;
+                color: #333;
+                border-radius: 3px;
+            }
+            #segment1-timeline {
+                background-color: #3498db;
+                width: 43%;
+            }
+            #silence-timeline {
+                background-color: #bdc3c7;
+                width: 14%;
+            }
+            #segment2-timeline {
+                background-color: #e67e22;
+                width: 43%;
+            }
+            .active-segment {
+                box-shadow: 0 0 8px 2px rgba(46, 204, 113, 0.8);
+                z-index: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="intro-section" class="section active">
+            <h1>音声環境識別実験</h1>
+            <p>
+                音声環境識別実験へようこそ。この実験では、一対の音声セグメントを聴き、それらが同じ環境で録音されたものかどうかを評価していただきます。
+            </p>
+            <p><strong>これからの手順：</strong></p>
+            <ol>
+                <li>各試行では、2秒間の無音を挟んだ2つの6秒間の音声セグメントが再生されます。</li>
+                <li>音声を聴いた後、2つのセグメントが同じ環境で録音された可能性を評価してください。</li>
+                <li>
+                    5段階の評価スケールを使用します：
+                    <ul>
+                        <li><strong>1</strong> = 明らかに異なる環境</li>
+                        <li><strong>2</strong> = おそらく異なる環境</li>
+                        <li><strong>3</strong> = わからない</li>
+                        <li><strong>4</strong> = おそらく同じ環境</li>
+                        <li><strong>5</strong> = 明らかに同じ環境</li>
+                    </ul>
+                </li>
+                <li>すべての試行を完了して結果を確認してください。</li>
+            </ol>
+            <p>全部で12の試行があります。実験は約5分で完了します。</p>
+            <div id="audioCheckMessage" class="loading">
+                <p>音声ファイルを確認中...</p>
+                <div class="spinner"></div>
+            </div>
+            <div id="errorMessage" class="error" style="display: none"></div>
+            <button id="start-button" disabled>読み込み中... お待ちください</button>
+        </div>
+
+        <div id="experiment-section" class="section">
+            <h1>音声環境識別実験</h1>
+            <div class="trial-info">
+                <strong>試行 <span id="current-trial">1</span> / <span id="total-trials">12</span></strong>
+                <span id="trial-status">開始準備完了</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="experiment-progress"></div>
+            </div>
+
+            <div class="segment-timeline">
+                <div
+                    id="segment1-timeline"
+                    class="timeline-segment"
+                    style="font-size: 12px; padding: 4px 0; height: 20px"
+                >
+                    セグメント1
+                </div>
+                <div
+                    id="silence-timeline"
+                    class="timeline-silence"
+                    style="font-size: 12px; padding: 4px 0; height: 20px"
+                >
+                    無音
+                </div>
+                <div
+                    id="segment2-timeline"
+                    class="timeline-segment"
+                    style="font-size: 12px; padding: 4px 0; height: 20px"
+                >
+                    セグメント2
+                </div>
+            </div>
+
+            <div class="audio-progress">
+                <div class="audio-progress-bar" id="audio-progress-bar"></div>
+            </div>
+
+            <div class="controls">
+                <button id="play-button">音声を再生</button>
+                <button id="replay-button" disabled>もう一度聴く</button>
+            </div>
+            <div class="rating-container" style="display: none">
+                <p>この2つの音声セグメントが<strong>同じ環境</strong>で録音された可能性を評価してください：</p>
+                <div class="rating-scale">
+                    <div class="rating-option">
+                        <button class="rating-button" data-rating="1" style="font-size: 12px; padding: 8px">1</button>
+                        <span style="font-size: 12px">明らかに異なる</span>
+                    </div>
+                    <div class="rating-option">
+                        <button class="rating-button" data-rating="2" style="font-size: 12px; padding: 8px">2</button>
+                        <span style="font-size: 12px">おそらく異なる</span>
+                    </div>
+                    <div class="rating-option">
+                        <button class="rating-button" data-rating="3" style="font-size: 12px; padding: 8px">3</button>
+                        <span style="font-size: 12px">わからない</span>
+                    </div>
+                    <div class="rating-option">
+                        <button class="rating-button" data-rating="4" style="font-size: 12px; padding: 8px">4</button>
+                        <span style="font-size: 12px">おそらく同じ</span>
+                    </div>
+                    <div class="rating-option">
+                        <button class="rating-button" data-rating="5" style="font-size: 12px; padding: 8px">5</button>
+                        <span style="font-size: 12px">明らかに同じ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results-section" class="section">
+            <h1>実験結果</h1>
+            <div class="results-summary">
+                <h2>総括</h2>
+                <p>
+                    あなたは<span id="total-count">12</span>ペアのうち<span id="correct-count">0</span
+                    >ペアを正しく識別しました （正確さ：<span id="accuracy-percentage">0</span>％）。
+                </p>
+                <table>
+                    <tr>
+                        <th>条件</th>
+                        <th>正解数</th>
+                        <th>合計</th>
+                        <th>正確さ</th>
+                    </tr>
+                    <tr>
+                        <td>同じ環境</td>
+                        <td id="same-correct">0</td>
+                        <td id="same-total">6</td>
+                        <td id="same-accuracy">0%</td>
+                    </tr>
+                    <tr>
+                        <td>異なる環境</td>
+                        <td id="diff-correct">0</td>
+                        <td id="diff-total">6</td>
+                        <td id="diff-accuracy">0%</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="results-details">
+                <h2>試行詳細</h2>
+                <div id="trial-results-container"></div>
+            </div>
+            <button id="restart-button">新しい実験を開始</button>
+        </div>
+
+        <script>
+            // オーディオコンテキストと変数
+            let audioContext;
+            let audioBuffers = [];
+            let currentTrial = 0;
+            let trials = [];
+            let responses = [];
+            let isPlaying = false;
+            let canRate = false;
+            let audioProgressInterval;
+            let currentSource = null;
+            let startTime = 0;
+            let segmentDuration = 6; // 各セグメント6秒
+            let silenceDuration = 2; // セグメント間に2秒の無音
+            const totalTrials = 12;
+            let segmentTimestamp = 0;
+            let currentSegment = 0; // 0: 未再生, 1: セグメント1, 2: セグメント2
+
+            // HTML要素
+            const sections = {
+                intro: document.getElementById('intro-section'),
+                experiment: document.getElementById('experiment-section'),
+                results: document.getElementById('results-section'),
+            };
+
+            const elements = {
+                startButton: document.getElementById('start-button'),
+                playButton: document.getElementById('play-button'),
+                replayButton: document.getElementById('replay-button'),
+                currentTrialSpan: document.getElementById('current-trial'),
+                totalTrialsSpan: document.getElementById('total-trials'),
+                trialStatus: document.getElementById('trial-status'),
+                progressBar: document.getElementById('experiment-progress'),
+                audioProgressBar: document.getElementById('audio-progress-bar'),
+                segment1Timeline: document.getElementById('segment1-timeline'),
+                silenceTimeline: document.getElementById('silence-timeline'),
+                segment2Timeline: document.getElementById('segment2-timeline'),
+                ratingContainer: document.querySelector('.rating-container'),
+                ratingButtons: document.querySelectorAll('.rating-button'),
+                restartButton: document.getElementById('restart-button'),
+                errorMessage: document.getElementById('errorMessage'),
+                audioCheckMessage: document.getElementById('audioCheckMessage'),
+            };
+
+            // 実験の初期化（ページ読み込み時）
+            window.addEventListener('load', initExperiment);
+
+            function initExperiment() {
+                // UIに合計試行数を設定
+                elements.totalTrialsSpan.textContent = totalTrials;
+
+                // イベントリスナーの追加
+                elements.startButton.addEventListener('click', startExperiment);
+                elements.playButton.addEventListener('click', playCurrentTrial);
+                elements.replayButton.addEventListener('click', playCurrentTrial);
+                elements.ratingButtons.forEach((button) => {
+                    button.addEventListener('click', () => rateCurrentTrial(parseInt(button.dataset.rating)));
+                });
+                elements.restartButton.addEventListener('click', resetExperiment);
+
+                // オーディオの初期化
+                initAudio();
+            }
+
+            async function initAudio() {
+                try {
+                    // オーディオコンテキストの作成
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+                    // オーディオファイルのパスを定義
+                    const audioFiles = [
+                        'audio/csv1.wav',
+                        'audio/csv2.wav',
+                        'audio/csv3.wav',
+                        'audio/csv4.wav',
+                        'audio/csv5.wav',
+                        'audio/csv6.wav',
+                    ];
+
+                    // オーディオファイルの読み込み
+                    const loadPromises = audioFiles.map((file, index) => loadAudioFile(file, index));
+
+                    // すべてのファイルが読み込まれるかタイムアウトするまで待機
+                    const timeoutPromise = new Promise((resolve) => {
+                        setTimeout(() => resolve('timeout'), 10000);
+                    });
+
+                    const result = await Promise.race([Promise.all(loadPromises), timeoutPromise]);
+
+                    if (result === 'timeout') {
+                        // タイムアウトした場合、いくつのファイルが読み込まれたかを確認
+                        const loadedFiles = audioBuffers.filter((buffer) => buffer !== null).length;
+
+                        if (loadedFiles === 0) {
+                            // ファイルがまったく読み込まれていない場合、エラーを表示してシミュレーションモードに切り替え
+                            showError('音声ファイルを読み込めませんでした。シミュレーションモードに切り替えます。');
+                            createSimulatedAudioBuffers();
+                        } else if (loadedFiles < audioFiles.length) {
+                            // 一部のファイルが読み込まれた場合、利用可能なファイルを使用
+                            showError(
+                                `${audioFiles.length}個中${loadedFiles}個の音声ファイルしか読み込めませんでした。利用可能なファイルを使用します。`
+                            );
+                        }
+                    }
+
+                    // 試行の作成
+                    createTrials();
+
+                    // 開始ボタンの有効化
+                    elements.startButton.disabled = false;
+                    elements.startButton.textContent = '実験を開始';
+                    elements.audioCheckMessage.style.display = 'none';
+                } catch (error) {
+                    console.error('オーディオの初期化中にエラーが発生しました:', error);
+                    showError('オーディオを初期化できませんでした。代わりにシミュレーションモードを使用します。');
+                    createSimulatedAudioBuffers();
+                    createTrials();
+                    elements.startButton.disabled = false;
+                    elements.startButton.textContent = '実験を開始（シミュレーションモード）';
+                    elements.audioCheckMessage.style.display = 'none';
+                }
+            }
+
+            function showError(message) {
+                elements.errorMessage.textContent = message;
+                elements.errorMessage.style.display = 'block';
+                console.warn(message);
+            }
+
+            // オーディオファイルを読み込みPromiseを返す
+            async function loadAudioFile(url, index) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`${url}の読み込みに失敗しました: ${response.status} ${response.statusText}`);
+                    }
+
+                    const arrayBuffer = await response.arrayBuffer();
+                    const decodedData = await audioContext.decodeAudioData(arrayBuffer);
+
+                    // デコードされたオーディオデータを保存
+                    audioBuffers[index] = decodedData;
+                    return decodedData;
+                } catch (error) {
+                    console.error(`オーディオファイル${url}の読み込み中にエラーが発生しました:`, error);
+                    audioBuffers[index] = null;
+                    return null;
+                }
+            }
+
+            // 実際のファイルが読み込めない場合、シミュレートされたオーディオバッファを作成
+            function createSimulatedAudioBuffers() {
+                audioBuffers = [];
+
+                for (let i = 0; i < 6; i++) {
+                    // 空のバッファを作成（シミュレートされた時間は30秒）
+                    const sampleRate = audioContext.sampleRate;
+                    const simulatedDuration = 30; // 30秒
+                    const buffer = audioContext.createBuffer(
+                        2, // ステレオ
+                        sampleRate * simulatedDuration,
+                        sampleRate
+                    );
+
+                    // 異なる環境をシミュレートするためにランダムノイズで満たす
+                    for (let channel = 0; channel < 2; channel++) {
+                        const channelData = buffer.getChannelData(channel);
+
+                        // 異なる環境には異なるノイズパターンを使用
+                        const noiseType = i % 3; // 3種類の異なるノイズパターン
+
+                        for (let j = 0; j < channelData.length; j++) {
+                            // 異なるノイズパターンを生成
+                            if (noiseType === 0) {
+                                // ホワイトノイズ
+                                channelData[j] = (Math.random() * 2 - 1) * 0.15;
+                            } else if (noiseType === 1) {
+                                // パルスノイズ
+                                const pulse = Math.sin((j / sampleRate) * Math.PI * 2) > 0 ? 1 : -1;
+                                channelData[j] = pulse * Math.random() * 0.1;
+                            } else {
+                                // フィルタリングされたノイズ
+                                channelData[j] = Math.sin(j / 100) * Math.random() * 0.15;
+                            }
+                        }
+                    }
+
+                    audioBuffers.push(buffer);
+                }
+            }
+
+            // 実験用の試行を作成
+            function createTrials() {
+                trials = [];
+
+                // 同じ環境の試行を作成（6試行）
+                for (let i = 0; i < 6; i++) {
+                    // ランダムな環境（オーディオファイル）を選択
+                    const environment = i % audioBuffers.length;
+
+                    // バッファの長さを取得（nullバッファの処理も行う）
+                    const buffer = audioBuffers[environment];
+                    const bufferDuration = buffer ? buffer.duration : 30; // シミュレートされたバッファの場合は30秒を使用
+
+                    // 2つの重複しないセグメントを抽出できることを確認
+                    const maxStartTime = bufferDuration - segmentDuration * 2;
+
+                    if (maxStartTime <= 0) {
+                        // バッファが短すぎる場合、開始セグメントを使用
+                        trials.push({
+                            type: 'same',
+                            environment: environment,
+                            segment1: { file: environment, start: 0, duration: segmentDuration },
+                            segment2: { file: environment, start: segmentDuration, duration: segmentDuration },
+                        });
+                    } else {
+                        // 2つのランダムなセグメントを抽出
+                        const start1 = Math.random() * maxStartTime;
+                        let start2;
+
+                        // セグメントが重複しないようにする
+                        do {
+                            start2 = Math.random() * maxStartTime;
+                        } while (Math.abs(start1 - start2) < segmentDuration);
+
+                        trials.push({
+                            type: 'same',
+                            environment: environment,
+                            segment1: { file: environment, start: start1, duration: segmentDuration },
+                            segment2: { file: environment, start: start2, duration: segmentDuration },
+                        });
+                    }
+                }
+
+                // 異なる環境の試行を作成（6試行）
+                for (let i = 0; i < 6; i++) {
+                    // 2つの異なる環境を選択
+                    let env1, env2;
+                    do {
+                        env1 = i % audioBuffers.length;
+                        env2 = (i + 1 + Math.floor(Math.random() * (audioBuffers.length - 1))) % audioBuffers.length;
+                    } while (env1 === env2);
+
+                    // バッファの長さを取得（nullバッファの処理も行う）
+                    const buffer1 = audioBuffers[env1];
+                    const buffer2 = audioBuffers[env2];
+                    const duration1 = buffer1 ? buffer1.duration : 30;
+                    const duration2 = buffer2 ? buffer2.duration : 30;
+
+                    // ランダムなセグメントを抽出
+                    const start1 = Math.min(Math.random() * (duration1 - segmentDuration), duration1 - segmentDuration);
+                    const start2 = Math.min(Math.random() * (duration2 - segmentDuration), duration2 - segmentDuration);
+
+                    trials.push({
+                        type: 'different',
+                        environment1: env1,
+                        environment2: env2,
+                        segment1: { file: env1, start: start1, duration: segmentDuration },
+                        segment2: { file: env2, start: start2, duration: segmentDuration },
+                    });
+                }
+
+                // 試行をシャッフル
+                shuffleArray(trials);
+            }
+
+            // Fisher-Yatesシャッフルアルゴリズム
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // 実験の開始
+            function startExperiment() {
+                // 実験セクションに切り替え
+                switchSection('experiment');
+
+                // 実験状態をリセット
+                currentTrial = 0;
+                responses = [];
+                updateTrialInfo();
+
+                // サスペンド状態の場合、オーディオコンテキストを再開
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            }
+
+            // セクション間の切り替え
+            function switchSection(sectionName) {
+                Object.keys(sections).forEach((key) => {
+                    sections[key].classList.remove('active');
+                });
+                sections[sectionName].classList.add('active');
+            }
+
+            // UIの試行情報を更新
+            function updateTrialInfo() {
+                elements.currentTrialSpan.textContent = currentTrial + 1;
+                elements.trialStatus.textContent = '再生の準備ができました';
+                elements.progressBar.style.width = `${(currentTrial / totalTrials) * 100}%`;
+                elements.ratingContainer.style.display = 'none';
+                elements.playButton.disabled = false;
+                elements.replayButton.disabled = true;
+
+                elements.segment1Timeline.classList.remove('active-segment');
+                elements.segment2Timeline.classList.remove('active-segment');
+                canRate = false;
+                currentSegment = 0;
+
+                // オーディオ進捗バーをリセット
+                elements.audioProgressBar.style.width = '0%';
+            }
+
+            // 現在の試行を再生
+            function playCurrentTrial() {
+                if (isPlaying) return;
+
+                isPlaying = true;
+                canRate = false;
+                elements.playButton.disabled = true;
+                elements.replayButton.disabled = true;
+                elements.trialStatus.textContent = '再生中...';
+                elements.ratingContainer.style.display = 'none';
+                elements.segment1Timeline.classList.remove('active-segment');
+                elements.segment2Timeline.classList.remove('active-segment');
+
+                // 現在の試行データを取得
+                const trial = trials[currentTrial];
+
+                // 無音を挟んだ音声セグメントのシーケンスを作成
+                const totalDuration = segmentDuration * 2 + silenceDuration;
+                startTime = audioContext.currentTime;
+
+                // セグメントを作成して再生する関数
+                function playSegment(segment, startOffset) {
+                    // バッファが存在するか確認
+                    const buffer = audioBuffers[segment.file];
+                    if (!buffer) {
+                        console.warn(`ファイル${segment.file}のバッファが利用できません。`);
+                        return null;
+                    }
+
+                    // ソースを作成
+                    const source = audioContext.createBufferSource();
+                    source.buffer = buffer;
+                    source.connect(audioContext.destination);
+
+                    // 再生をスケジュール
+                    const startPosition = Math.min(segment.start, buffer.duration - segment.duration);
+                    source.start(audioContext.currentTime + startOffset, startPosition, segment.duration);
+
+                    return source;
+                }
+
+                // 最初のセグメントを再生
+                const source1 = playSegment(trial.segment1, 0);
+
+                // 無音の後に2番目のセグメントを再生
+                const source2 = playSegment(trial.segment2, segmentDuration + silenceDuration);
+
+                // 潜在的な停止のために現在のソースを保存
+                currentSource = source1;
+                currentSegment = 1;
+
+                // セグメント1のインジケータを表示
+                elements.segment1Timeline.classList.add('active-segment');
+
+                // 進捗の更新を設定
+                updateAudioProgress(0);
+                clearInterval(audioProgressInterval);
+                audioProgressInterval = setInterval(() => {
+                    const elapsed = audioContext.currentTime - startTime;
+                    const progress = (elapsed / totalDuration) * 100;
+                    updateAudioProgress(progress);
+
+                    // セグメント1の終了時
+                    if (
+                        elapsed >= segmentDuration &&
+                        elapsed < segmentDuration + silenceDuration &&
+                        currentSegment === 1
+                    ) {
+                        currentSegment = 0; // 無音期間
+                        elements.segment1Timeline.classList.remove('active-segment');
+                    }
+
+                    // セグメント2の開始時
+                    if (elapsed >= segmentDuration + silenceDuration && currentSegment === 0) {
+                        currentSegment = 2;
+                        elements.segment2Timeline.classList.add('active-segment');
+                        if (source2) {
+                            currentSource = source2;
+                        }
+                    }
+
+                    // 再生完了の処理
+                    if (elapsed >= totalDuration) {
+                        clearInterval(audioProgressInterval);
+                        playbackCompleted();
+                    }
+                }, 50);
+            }
+
+            // オーディオ進捗バーを更新
+            function updateAudioProgress(progress) {
+                elements.audioProgressBar.style.width = `${Math.min(progress, 100)}%`;
+            }
+
+            // オーディオ再生完了の処理
+            function playbackCompleted() {
+                isPlaying = false;
+                canRate = true;
+                elements.trialStatus.textContent = '評価してください';
+                elements.ratingContainer.style.display = 'block';
+                elements.replayButton.disabled = false;
+                elements.segment1Timeline.classList.remove('active-segment');
+                elements.segment2Timeline.classList.remove('active-segment');
+                currentSegment = 0;
+                updateAudioProgress(100);
+            }
+
+            // 現在の試行を評価
+            function rateCurrentTrial(rating) {
+                if (!canRate) return;
+
+                // 回答を保存
+                responses.push({
+                    trial: currentTrial,
+                    trialData: trials[currentTrial],
+                    rating: rating,
+                    // 回答が正しいかどうかを判断（同じ環境の場合は4-5、異なる環境の場合は1-2）
+                    correct:
+                        (trials[currentTrial].type === 'same' && rating >= 4) ||
+                        (trials[currentTrial].type === 'different' && rating <= 2),
+                });
+
+                // 次の試行に進むか結果を表示
+                currentTrial++;
+
+                if (currentTrial < totalTrials) {
+                    updateTrialInfo();
+                } else {
+                    showResults();
+                }
+            }
+
+            // 実験結果を表示
+            function showResults() {
+                // 結果セクションに切り替え
+                switchSection('results');
+
+                // 結果の計算
+                const correctCount = responses.filter((r) => r.correct).length;
+                const accuracy = Math.round((correctCount / totalTrials) * 100);
+
+                // 条件別の結果を計算
+                const sameTrials = responses.filter((r) => r.trialData.type === 'same');
+                const diffTrials = responses.filter((r) => r.trialData.type === 'different');
+
+                const sameCorrect = sameTrials.filter((r) => r.correct).length;
+                const diffCorrect = diffTrials.filter((r) => r.correct).length;
+
+                const sameAccuracy = Math.round((sameCorrect / sameTrials.length) * 100);
+                const diffAccuracy = Math.round((diffCorrect / diffTrials.length) * 100);
+
+                // 要約要素を更新
+                document.getElementById('correct-count').textContent = correctCount;
+                document.getElementById('total-count').textContent = totalTrials;
+                document.getElementById('accuracy-percentage').textContent = accuracy;
+
+                document.getElementById('same-correct').textContent = sameCorrect;
+                document.getElementById('same-total').textContent = sameTrials.length;
+                document.getElementById('same-accuracy').textContent = sameAccuracy + '%';
+
+                document.getElementById('diff-correct').textContent = diffCorrect;
+                document.getElementById('diff-total').textContent = diffTrials.length;
+                document.getElementById('diff-accuracy').textContent = diffAccuracy + '%';
+
+                // 詳細結果を生成
+                const resultsContainer = document.getElementById('trial-results-container');
+                resultsContainer.innerHTML = '';
+
+                responses.forEach((response, index) => {
+                    const trial = response.trialData;
+                    const trialElement = document.createElement('div');
+                    trialElement.className = `result-item ${response.correct ? 'correct' : 'incorrect'}`;
+
+                    const typeText =
+                        trial.type === 'same'
+                            ? `同じ環境（ファイル ${trial.environment + 1}）`
+                            : `異なる環境（ファイル ${trial.environment1 + 1} と ${trial.environment2 + 1}）`;
+
+                    const ratingText = [
+                        '明らかに異なる',
+                        'おそらく異なる',
+                        'わからない',
+                        'おそらく同じ',
+                        '明らかに同じ',
+                    ][response.rating - 1];
+
+                    trialElement.innerHTML = `
+                    <strong>試行 ${index + 1}:</strong> ${typeText}<br>
+                    あなたの評価: ${response.rating} (${ratingText})<br>
+                    <span style="color: ${response.correct ? '#2ecc71' : '#e74c3c'}">
+                        ${response.correct ? '正解' : '不正解'}
+                    </span>
+                `;
+
+                    resultsContainer.appendChild(trialElement);
+                });
+            }
+
+            // 実験をリセットして再開
+            function resetExperiment() {
+                // 新しい試行を作成
+                createTrials();
+
+                // 実験状態をリセット
+                currentTrial = 0;
+                responses = [];
+
+                // 再度開始
+                startExperiment();
+            }
+        </script>
+    </body>
+</html>
