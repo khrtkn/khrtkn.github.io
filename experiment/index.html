@@ -514,17 +514,17 @@
                     // オーディオコンテキストの作成
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-                    // 正しいパス（直接アクセスできることを確認済み）
-                    const basePath = '/experiment/audio/';
+                    // 絶対URLを使用（直接アクセス可能なURL）
+                    const baseUrl = 'https://khrtkn.github.io/experiment/audio/';
 
                     // オーディオファイルのパスを定義
                     const audioFiles = [
-                        basePath + 'csv1.wav',
-                        basePath + 'csv2.wav',
-                        basePath + 'csv3.wav',
-                        basePath + 'csv4.wav',
-                        basePath + 'csv5.wav',
-                        basePath + 'csv6.wav',
+                        baseUrl + 'csv1.wav',
+                        baseUrl + 'csv2.wav',
+                        baseUrl + 'csv3.wav',
+                        baseUrl + 'csv4.wav',
+                        baseUrl + 'csv5.wav',
+                        baseUrl + 'csv6.wav',
                     ];
 
                     console.log('Loading audio files from:', audioFiles);
