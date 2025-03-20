@@ -297,16 +297,24 @@
     <body style="font-size: 12px">
         <div id="intro-section" class="section active">
             <h1 style="font-size: 32px">音声環境識別実験</h1>
-            <p style="font-size: 12px">
-                音声環境識別実験へようこそ。この実験では、一対の音声セグメントを聴き、それらが同じ環境で録音されたものかどうかを評価していただきます。
-            </p>
+
+            <div style="background-color: #f5f5f5; padding: 12px; border-radius: 4px; margin-bottom: 16px">
+                <h2 style="font-size: 14px; color: #333; margin-bottom: 8px">コンセプト</h2>
+                <p style="font-size: 12px">
+                    本作品では、それぞれの空間に住まう最も数が多い微生物に着目し、その特徴を人が聞くことができる音に変換することで、わたしたちと同じ空間を生きる小さな「命」の存在を実感できるようにすることを試みました。微生物の特徴を音に変換する際に用いたのが、各微生物に与えられた分類学上の命名法です。生物は「界」「門」「綱」「目」「科」「属」「種」という階級によって分類され、この分類階級に音の性質を対応させることで、各微生物固有の音を生成しました。
+                </p>
+                <p style="font-size: 12px; margin-top: 8px">
+                    この実験では、異なる環境を表現した音を聴き、それらが同じ環境からのものか、異なる環境からのものかを判断していただきます。あなたの聴覚的な識別能力が試されます。
+                </p>
+            </div>
+
             <p style="font-size: 12px"><strong style="font-size: 12px">これからの手順：</strong></p>
             <ol>
                 <li style="font-size: 12px">
                     各試行では、2秒間の無音を挟んだ2つの6秒間の音声セグメントが再生されます。
                 </li>
                 <li style="font-size: 12px">
-                    音声を聴いた後、2つのセグメントが同じ環境で録音された可能性を評価してください。
+                    音声を聴いた後、2つのセグメントが同じ環境を表現した音であるかの可能性を評価してください。
                 </li>
                 <li style="font-size: 12px">
                     5段階の評価スケールを使用します：
@@ -378,7 +386,7 @@
             <div class="rating-container" style="display: none">
                 <p style="font-size: 12px">
                     この2つの音声セグメントが<strong style="font-size: 12px">同じ環境</strong
-                    >で録音された可能性を評価してください：
+                    >を表現した可能性を評価してください：
                 </p>
                 <div class="rating-scale">
                     <div class="rating-option">
@@ -408,7 +416,7 @@
         <div id="results-section" class="section">
             <h1 style="font-size: 32px">実験結果</h1>
             <div class="results-summary">
-                <h2 style="font-size: 12px">総括</h2>
+                <h2 style="font-size: 14px; margin-bottom: 8px">総括</h2>
                 <p style="font-size: 12px">
                     あなたは<span id="total-count" style="font-size: 12px">12</span>ペアのうち<span
                         id="correct-count"
@@ -438,11 +446,63 @@
                     </tr>
                 </table>
             </div>
+
+            <div style="background-color: #f5f5f5; padding: 12px; border-radius: 4px; margin: 16px 0">
+                <h2 style="font-size: 14px; margin-bottom: 8px">採集場所について</h2>
+                <p style="font-size: 12px">
+                    「Listen to Your
+                    Neighbors」で使用されている生物データは、今年の8月31日にCCBTとその周辺で採取されました。「右奥の部屋の床のカーペット」「ステンレスのゴミ箱の蓋の裏」「階段のレンガ」「会場入り口の壁紙」「受付のぬいぐるみ」「中庭の植木の葉」を、専用の綿棒でそれぞれ3分間拭い、得られたサンプルを解析サービスを通じて遺伝子情報に変換しました。
+                </p>
+                <p style="font-size: 12px; margin-top: 8px">
+                    それぞれの環境で見つかった微生物の種類や数は大きく異なっていました。あなたが聴いた音は、これらの環境に存在する微生物のデータを音に変換したものです。識別結果からわかるように、各環境には特有の「音の特徴」があります。
+                </p>
+            </div>
+
+            <div
+                class="data-export"
+                style="margin: 16px 0; background-color: #f5f5f5; padding: 12px; border-radius: 4px"
+            >
+                <h2 style="font-size: 14px; margin-bottom: 8px">実験データ（研究者用）</h2>
+                <div style="margin-bottom: 8px">
+                    <button id="copy-json-button" style="font-size: 12px; background-color: #34495e">
+                        JSONデータをコピー
+                    </button>
+                    <button id="copy-csv-button" style="font-size: 12px; background-color: #34495e">
+                        CSVデータをコピー
+                    </button>
+                </div>
+                <div
+                    class="results-data"
+                    style="
+                        background-color: #fff;
+                        padding: 8px;
+                        border-radius: 4px;
+                        max-height: 100px;
+                        overflow-y: auto;
+                    "
+                >
+                    <pre id="results-json" style="font-size: 10px; margin: 0; white-space: pre-wrap"></pre>
+                </div>
+            </div>
+
             <div class="results-details">
-                <h2 style="font-size: 12px">試行詳細</h2>
+                <h2 style="font-size: 14px; margin-bottom: 8px">試行詳細</h2>
                 <div id="trial-results-container"></div>
             </div>
-            <button id="restart-button" style="font-size: 12px">新しい実験を開始</button>
+
+            <div style="background-color: #f5f5f5; padding: 12px; border-radius: 4px; margin: 16px 0">
+                <h2 style="font-size: 14px; margin-bottom: 8px">データと音の変換方法</h2>
+                <p style="font-size: 12px">
+                    「綱」と「属」にインデックスを付与し、調査された微生物を二次元ベクトルの形式で表示しました。x値（属）を音のピッチに、y値（綱）を音のエフェクトの種類にマッピングしました。これにより、同じピッチで異なるエフェクトの音や、同じエフェクトで異なるピッチの音が生まれます。「綱」は進化的なルーツの違いを示しており、これらをエフェクトの種類として表現することで、生物の進化的な「距離感」や構造的な違いを音で表現することが可能となりました。また、DNA配列を読み取ることができた量を示す「リード数」を、音の重なりとして反映させています。
+                </p>
+                <p style="font-size: 12px; margin-top: 8px">
+                    生物データから音への変換は、リアルタイムで行われています。この空間に息づく「命」の存在を感じることができたでしょうか。帰り道やあなたの部屋にも生きている、目には見えない生き物たちの存在にこれからも耳を傾けてみてください。
+                </p>
+            </div>
+
+            <div style="margin-top: 16px">
+                <button id="restart-button" style="font-size: 12px">新しい実験を開始</button>
+            </div>
         </div>
 
         <script>
@@ -969,6 +1029,54 @@
                 document.getElementById('diff-total').textContent = diffTrials.length;
                 document.getElementById('diff-accuracy').textContent = diffAccuracy + '%';
 
+                // データのエクスポート用の情報を作成
+                const resultsData = {
+                    summary: {
+                        totalTrials: totalTrials,
+                        correctTrials: correctCount,
+                        accuracy: accuracy,
+                        sameTrials: {
+                            total: sameTrials.length,
+                            correct: sameCorrect,
+                            accuracy: sameAccuracy,
+                        },
+                        differentTrials: {
+                            total: diffTrials.length,
+                            correct: diffCorrect,
+                            accuracy: diffAccuracy,
+                        },
+                    },
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    detailedResponses: responses.map((response, index) => {
+                        return {
+                            trialNumber: index + 1,
+                            trialType: response.trialData.type,
+                            environment:
+                                response.trialData.type === 'same'
+                                    ? response.trialData.environment + 1
+                                    : [response.trialData.environment1 + 1, response.trialData.environment2 + 1],
+                            userRating: response.rating,
+                            isCorrect: response.correct,
+                        };
+                    }),
+                };
+
+                // JSONとして表示
+                document.getElementById('results-json').textContent = JSON.stringify(resultsData, null, 2);
+
+                // コピーボタンにイベントリスナーを追加
+                document.getElementById('copy-json-button').addEventListener('click', () => {
+                    copyToClipboard(JSON.stringify(resultsData));
+                    alert('JSONデータがクリップボードにコピーされました');
+                });
+
+                document.getElementById('copy-csv-button').addEventListener('click', () => {
+                    const csvData = convertToCSV(resultsData);
+                    copyToClipboard(csvData);
+                    alert('CSVデータがクリップボードにコピーされました');
+                });
+
                 // 詳細結果を生成
                 const resultsContainer = document.getElementById('trial-results-container');
                 resultsContainer.innerHTML = '';
@@ -1002,6 +1110,40 @@
 
                     resultsContainer.appendChild(trialElement);
                 });
+            }
+
+            // テキストをクリップボードにコピーする関数
+            function copyToClipboard(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+
+            // 結果データをCSV形式に変換する関数
+            function convertToCSV(data) {
+                // ヘッダー行
+                let csv = 'trial,type,environment,rating,correct\n';
+
+                // 詳細データ行
+                data.detailedResponses.forEach((response) => {
+                    const environment = Array.isArray(response.environment)
+                        ? response.environment.join('-')
+                        : response.environment;
+
+                    csv += `${response.trialNumber},${response.trialType},${environment},${response.userRating},${response.isCorrect}\n`;
+                });
+
+                // サマリー行
+                csv += '\nSummary:\n';
+                csv += `Total Accuracy,${data.summary.accuracy}%\n`;
+                csv += `Same Environment Accuracy,${data.summary.sameTrials.accuracy}%\n`;
+                csv += `Different Environment Accuracy,${data.summary.differentTrials.accuracy}%\n`;
+                csv += `Timestamp,${data.timestamp}\n`;
+
+                return csv;
             }
 
             // 実験をリセットして再開
