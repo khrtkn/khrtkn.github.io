@@ -311,7 +311,7 @@
             <p style="font-size: 12px"><strong style="font-size: 12px">これからの手順：</strong></p>
             <ol>
                 <li style="font-size: 12px">
-                    各試行では、2秒間の無音を挟んだ2つの6秒間の音声セグメントが再生されます。
+                    各試行では、2秒間の無音を挟んだ2つの10秒間の音声セグメントが再生されます。
                 </li>
                 <li style="font-size: 12px">
                     音声を聴いた後、2つのセグメントが同じ環境を表現した音であるかの可能性を評価してください。
@@ -517,7 +517,7 @@
             let audioProgressInterval;
             let currentSource = null;
             let startTime = 0;
-            let segmentDuration = 10;
+            let segmentDuration = 12;
             let silenceDuration = 2; // セグメント間に2秒の無音
             const totalTrials = 15;
             let segmentTimestamp = 0;
@@ -698,7 +698,7 @@
 
                     // 10秒のフェッチタイムアウトを設定
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000);
+                    const timeoutId = setTimeout(() => controller.abort(), 20000);
 
                     const response = await fetch(url, { signal: controller.signal });
                     clearTimeout(timeoutId);
@@ -712,7 +712,7 @@
                     // デコードタイムアウト機能を追加
                     const decodePromise = audioContext.decodeAudioData(arrayBuffer);
                     const timeoutPromise = new Promise((_, reject) =>
-                        setTimeout(() => reject(new Error('デコードがタイムアウトしました')), 15000)
+                        setTimeout(() => reject(new Error('デコードがタイムアウトしました')), 20000)
                     );
 
                     try {
