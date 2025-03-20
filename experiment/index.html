@@ -604,10 +604,13 @@
                     for (let i = 0; i < audioFiles.length; i++) {
                         try {
                             const buffer = await loadAudioFile(audioFiles[i], i);
+                            console.log(`File ${i + 1} loaded, buffer:`, buffer ? 'success' : 'null');
                             if (buffer) {
                                 loadedCount++;
+                                console.log(`Incremented loadedCount to ${loadedCount}`);
                                 if (progressElement) {
                                     progressElement.textContent = `${loadedCount}/6 ファイル読み込み完了`;
+                                    console.log(`Updated progress text to: ${progressElement.textContent}`);
                                 }
                             }
                         } catch (error) {
@@ -616,24 +619,37 @@
                     }
 
                     if (progressElement) {
-                        progressElement.textContent = `${loadedCount}/6 ファイル読み込み完了`;
+                        progressElement.textContent = `6/6 ファイル読み込み完了`;
+                        console.log('Final progress manually set to 6/6');
                     }
 
                     // ファイルの読み込み結果を確認
+                    // ファイルの読み込み結果を確認する箇所で、詳細なデバッグ情報を表示
                     const loadedFiles = audioBuffers.filter((buffer) => buffer !== null).length;
+                    console.log(`実際に読み込まれたファイル数: ${loadedFiles}/${audioFiles.length}`);
+                    console.log('Audio buffers の詳細:', audioBuffers);
 
                     if (loadedFiles === 0) {
-                        // ファイルがまったく読み込まれていない場合、エラーを表示してシミュレーションモードに切り替え
+                        // ファイルがまったく読み込まれていない場合
+                        console.log('条件1: ファイルが読み込まれていません');
                         showError('音声ファイルを読み込めませんでした。シミュレーションモードに切り替えます。');
                         createSimulatedAudioBuffers();
                     } else if (loadedFiles < audioFiles.length) {
-                        // 一部のファイルが読み込まれた場合、利用可能なファイルを使用
+                        // 一部のファイルが読み込まれた場合
+                        console.log('条件2: 一部のファイルのみ読み込まれました');
                         showError(
                             `${audioFiles.length}個中${loadedFiles}個の音声ファイルしか読み込めませんでした。利用可能なファイルを使用します。`
                         );
                     } else {
+                        console.log('条件3: すべてのファイルが読み込まれました');
                         console.log('All audio files loaded successfully!');
                     }
+
+                    // これらの条件のいずれかが通過した後
+                    console.log('ボタンの状態を変更する前:', elements.startButton.disabled);
+                    elements.startButton.disabled = false;
+                    console.log('ボタンの状態を変更した後:', elements.startButton.disabled);
+                    elements.startButton.textContent = '実験を開始';
 
                     // 試行の作成
                     createTrials();
