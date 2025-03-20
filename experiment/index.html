@@ -7,145 +7,254 @@
         <style>
             body {
                 font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-                line-height: 1.6;
+                line-height: 1.4;
                 margin: 0;
-                padding: 20px;
-                max-width: 800px;
+                padding: 8px;
+                max-width: 480px;
                 margin: 0 auto;
                 color: #333;
+                font-size: 12px;
+            }
+            * {
+                font-size: 12px;
+            }
+            p,
+            span,
+            div,
+            li,
+            strong,
+            button,
+            td,
+            th {
+                font-size: 12px !important;
             }
             .section {
                 display: none;
-                margin-top: 20px;
+                margin-top: 8px;
+                padding: 8px;
             }
             .active {
                 display: block;
             }
             h1 {
                 color: #2c3e50;
-                margin-bottom: 20px;
+                margin-bottom: 8px;
+                font-size: 32px !important;
+                font-weight: normal;
+                padding: 8px 0;
             }
             button {
-                background-color: #2c3e50;
+                background-color: #8e44ad;
                 color: white;
                 border: none;
-                padding: 10px 20px;
-                margin: 5px;
+                padding: 8px;
+                margin: 3px;
                 border-radius: 4px;
                 cursor: pointer;
-                font-size: 16px;
+                font-size: 12px !important;
                 transition: background-color 0.3s;
             }
             button:hover {
-                background-color: #2980b9;
+                background-color: #9b59b6;
             }
             button:disabled {
-                background-color: #95a5a6;
+                background-color: #bdc3c7;
                 cursor: not-allowed;
+            }
+            .controls button#play-button {
+                background-color: #27ae60;
+            }
+            .controls button#play-button:hover {
+                background-color: #2ecc71;
+            }
+            .controls button#replay-button {
+                background-color: #16a085;
+            }
+            .controls button#replay-button:hover {
+                background-color: #1abc9c;
+            }
+            #restart-button {
+                background-color: #e74c3c;
+            }
+            #restart-button:hover {
+                background-color: #c0392b;
+            }
+            .rating-button {
+                width: 36px;
+                margin-right: 8px;
+                font-size: 12px !important;
+                padding: 8px;
+                background-color: #3498db;
+            }
+            .rating-button:hover {
+                background-color: #2980b9;
             }
             .rating-scale {
                 display: flex;
-                justify-content: space-between;
-                margin: 20px 0;
+                flex-direction: column;
+                margin: 8px 0;
                 width: 100%;
             }
             .rating-option {
                 display: flex;
-                flex-direction: column;
+                flex-direction: row;
                 align-items: center;
-                width: 18%;
-            }
-            .rating-button {
                 width: 100%;
+                margin-bottom: 5px;
             }
             .progress-container {
                 width: 100%;
                 background-color: #ecf0f1;
-                height: 20px;
-                margin: 20px 0;
-                border-radius: 10px;
+                height: 12px;
+                margin: 8px 0;
+                border-radius: 6px;
                 overflow: hidden;
+                padding: 0;
             }
             .progress-bar {
                 height: 100%;
                 background-color: #2ecc71;
                 width: 0%;
                 transition: width 0.3s;
+                padding: 0;
             }
             .trial-info {
                 display: flex;
                 justify-content: space-between;
-                margin-bottom: 10px;
+                margin-bottom: 8px;
+                font-size: 12px !important;
+                padding: 8px 0;
             }
             .audio-progress {
                 width: 100%;
-                height: 10px;
+                height: 6px;
                 background-color: #ecf0f1;
-                margin: 10px 0;
-                border-radius: 5px;
+                margin: 8px 0;
+                border-radius: 3px;
                 overflow: hidden;
                 position: relative;
+                padding: 0;
             }
             .audio-progress-bar {
                 height: 100%;
                 background-color: #e74c3c;
                 width: 0%;
                 transition: width 0.1s linear;
+                padding: 0;
             }
             .audio-progress-segment {
                 position: absolute;
                 height: 100%;
                 background-color: rgba(0, 0, 0, 0.1);
-                border-right: 2px solid #7f8c8d;
+                border-right: 1px solid #7f8c8d;
+                padding: 0;
             }
-
-            .segment-labels {
+            .segment-timeline {
                 display: flex;
-                justify-content: space-between;
-                margin-top: 5px;
-                font-size: 14px;
+                width: 100%;
+                margin-top: 8px;
+                height: 20px;
+                position: relative;
+                padding: 0;
+            }
+            .timeline-segment,
+            #segment1-timeline,
+            #segment2-timeline {
+                position: relative;
+                height: 20px;
+                text-align: center;
+                color: white;
+                font-weight: normal;
+                padding: 4px 0 !important;
+                border-radius: 3px;
+                font-size: 12px !important;
+                line-height: 1.2;
+            }
+            .timeline-silence,
+            #silence-timeline {
+                background-color: #bdc3c7;
+                position: relative;
+                height: 20px;
+                text-align: center;
+                font-size: 12px !important;
+                padding: 4px 0 !important;
+                color: #333;
+                border-radius: 3px;
+                line-height: 1.2;
+            }
+            #segment1-timeline {
+                background-color: #3498db;
+                width: 43%;
+                font-size: 12px !important;
+                background-image: linear-gradient(to bottom, #3498db, #2980b9);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+            }
+            #silence-timeline {
+                background-color: #bdc3c7;
+                width: 14%;
+                font-size: 12px !important;
+                background-image: linear-gradient(to bottom, #ecf0f1, #bdc3c7);
+            }
+            #segment2-timeline {
+                background-color: #f39c12;
+                width: 43%;
+                font-size: 12px !important;
+                background-image: linear-gradient(to bottom, #f39c12, #e67e22);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+            }
+            .active-segment {
+                box-shadow: 0 0 8px 2px rgba(46, 204, 113, 0.8) !important;
+                z-index: 1;
+                border: 1px solid #27ae60;
             }
             .results-container {
-                margin-top: 20px;
+                margin-top: 8px;
+                padding: 8px 0;
             }
             .result-item {
-                margin-bottom: 10px;
-                padding: 10px;
+                margin-bottom: 8px;
+                padding: 8px;
                 background-color: #f9f9f9;
-                border-radius: 4px;
+                border-radius: 3px;
+                font-size: 12px !important;
             }
             .correct {
-                border-left: 4px solid #2ecc71;
+                border-left: 2px solid #2ecc71;
             }
             .incorrect {
-                border-left: 4px solid #e74c3c;
+                border-left: 2px solid #e74c3c;
             }
             table {
                 width: 100%;
                 border-collapse: collapse;
-                margin: 20px 0;
+                margin: 8px 0;
             }
             th,
             td {
-                padding: 10px;
+                padding: 8px;
                 text-align: left;
                 border-bottom: 1px solid #ddd;
+                font-size: 12px !important;
             }
             th {
                 background-color: #f2f2f2;
+                font-weight: normal;
             }
             .loading {
                 text-align: center;
-                margin: 20px 0;
+                margin: 8px 0;
+                padding: 8px 0;
             }
             .spinner {
-                border: 4px solid rgba(0, 0, 0, 0.1);
-                width: 36px;
-                height: 36px;
+                border: 2px solid rgba(0, 0, 0, 0.1);
+                width: 24px;
+                height: 24px;
                 border-radius: 50%;
                 border-left-color: #3498db;
                 animation: spin 1s linear infinite;
                 display: inline-block;
+                padding: 0;
+                margin: 8px auto;
             }
             @keyframes spin {
                 0% {
@@ -157,91 +266,78 @@
             }
             .error {
                 color: #e74c3c;
-                padding: 10px;
+                padding: 8px;
                 background-color: #fadbd8;
-                border-radius: 4px;
-                margin: 10px 0;
+                border-radius: 3px;
+                margin: 8px 0;
+                font-size: 12px !important;
             }
-            .segment-timeline {
+            .controls {
                 display: flex;
-                width: 100%;
-                margin-top: 5px;
-                height: 30px;
-                position: relative;
+                flex-direction: column;
+                align-items: center;
+                padding: 8px 0;
             }
-            .timeline-segment {
-                position: relative;
-                height: 20px;
-                text-align: center;
-                color: white;
-                font-weight: bold;
-                padding-top: 5px;
-                border-radius: 3px;
+            .controls button {
+                width: 80%;
+                margin: 3px 0;
             }
-            .timeline-silence {
-                background-color: #bdc3c7;
-                position: relative;
-                height: 20px;
-                text-align: center;
-                padding-top: 5px;
-                font-size: 12px;
-                color: #333;
-                border-radius: 3px;
+            ol,
+            ul {
+                padding-left: 18px;
+                margin: 8px 0;
             }
-            #segment1-timeline {
-                background-color: #3498db;
-                width: 43%;
-            }
-            #silence-timeline {
-                background-color: #bdc3c7;
-                width: 14%;
-            }
-            #segment2-timeline {
-                background-color: #e67e22;
-                width: 43%;
-            }
-            .active-segment {
-                box-shadow: 0 0 8px 2px rgba(46, 204, 113, 0.8);
-                z-index: 1;
+            li {
+                margin-bottom: 3px;
+                padding: 4px 0;
+                font-size: 12px !important;
             }
         </style>
     </head>
-    <body>
+    <body style="font-size: 12px">
         <div id="intro-section" class="section active">
-            <h1>音声環境識別実験</h1>
-            <p>
+            <h1 style="font-size: 32px">音声環境識別実験</h1>
+            <p style="font-size: 12px">
                 音声環境識別実験へようこそ。この実験では、一対の音声セグメントを聴き、それらが同じ環境で録音されたものかどうかを評価していただきます。
             </p>
-            <p><strong>これからの手順：</strong></p>
+            <p style="font-size: 12px"><strong style="font-size: 12px">これからの手順：</strong></p>
             <ol>
-                <li>各試行では、2秒間の無音を挟んだ2つの6秒間の音声セグメントが再生されます。</li>
-                <li>音声を聴いた後、2つのセグメントが同じ環境で録音された可能性を評価してください。</li>
-                <li>
+                <li style="font-size: 12px">
+                    各試行では、2秒間の無音を挟んだ2つの6秒間の音声セグメントが再生されます。
+                </li>
+                <li style="font-size: 12px">
+                    音声を聴いた後、2つのセグメントが同じ環境で録音された可能性を評価してください。
+                </li>
+                <li style="font-size: 12px">
                     5段階の評価スケールを使用します：
                     <ul>
-                        <li><strong>1</strong> = 明らかに異なる環境</li>
-                        <li><strong>2</strong> = おそらく異なる環境</li>
-                        <li><strong>3</strong> = わからない</li>
-                        <li><strong>4</strong> = おそらく同じ環境</li>
-                        <li><strong>5</strong> = 明らかに同じ環境</li>
+                        <li style="font-size: 12px"><strong style="font-size: 12px">1</strong> = 明らかに異なる環境</li>
+                        <li style="font-size: 12px"><strong style="font-size: 12px">2</strong> = おそらく異なる環境</li>
+                        <li style="font-size: 12px"><strong style="font-size: 12px">3</strong> = わからない</li>
+                        <li style="font-size: 12px"><strong style="font-size: 12px">4</strong> = おそらく同じ環境</li>
+                        <li style="font-size: 12px"><strong style="font-size: 12px">5</strong> = 明らかに同じ環境</li>
                     </ul>
                 </li>
-                <li>すべての試行を完了して結果を確認してください。</li>
+                <li style="font-size: 12px">すべての試行を完了して結果を確認してください。</li>
             </ol>
-            <p>全部で12の試行があります。実験は約5分で完了します。</p>
+            <p style="font-size: 12px">全部で12の試行があります。実験は約5分で完了します。</p>
             <div id="audioCheckMessage" class="loading">
-                <p>音声ファイルを確認中...</p>
+                <p style="font-size: 12px">音声ファイルを読み込み中...<br />これには時間がかかる場合があります。</p>
                 <div class="spinner"></div>
+                <p style="font-size: 12px" id="loading-progress">0/6 ファイル読み込み完了</p>
             </div>
-            <div id="errorMessage" class="error" style="display: none"></div>
-            <button id="start-button" disabled>読み込み中... お待ちください</button>
+            <div id="errorMessage" class="error" style="display: none; font-size: 12px"></div>
+            <button id="start-button" disabled style="font-size: 12px">読み込み中... お待ちください</button>
         </div>
 
         <div id="experiment-section" class="section">
-            <h1>音声環境識別実験</h1>
-            <div class="trial-info">
-                <strong>試行 <span id="current-trial">1</span> / <span id="total-trials">12</span></strong>
-                <span id="trial-status">開始準備完了</span>
+            <h1 style="font-size: 32px">音声環境識別実験</h1>
+            <div class="trial-info" style="font-size: 12px">
+                <strong style="font-size: 12px"
+                    >試行 <span id="current-trial" style="font-size: 12px">1</span> /
+                    <span id="total-trials" style="font-size: 12px">12</span></strong
+                >
+                <span id="trial-status" style="font-size: 12px">開始準備完了</span>
             </div>
             <div class="progress-container">
                 <div class="progress-bar" id="experiment-progress"></div>
@@ -276,11 +372,14 @@
             </div>
 
             <div class="controls">
-                <button id="play-button">音声を再生</button>
-                <button id="replay-button" disabled>もう一度聴く</button>
+                <button id="play-button" style="font-size: 12px">音声を再生</button>
+                <button id="replay-button" disabled style="font-size: 12px">もう一度聴く</button>
             </div>
             <div class="rating-container" style="display: none">
-                <p>この2つの音声セグメントが<strong>同じ環境</strong>で録音された可能性を評価してください：</p>
+                <p style="font-size: 12px">
+                    この2つの音声セグメントが<strong style="font-size: 12px">同じ環境</strong
+                    >で録音された可能性を評価してください：
+                </p>
                 <div class="rating-scale">
                     <div class="rating-option">
                         <button class="rating-button" data-rating="1" style="font-size: 12px; padding: 8px">1</button>
@@ -307,39 +406,43 @@
         </div>
 
         <div id="results-section" class="section">
-            <h1>実験結果</h1>
+            <h1 style="font-size: 32px">実験結果</h1>
             <div class="results-summary">
-                <h2>総括</h2>
-                <p>
-                    あなたは<span id="total-count">12</span>ペアのうち<span id="correct-count">0</span
-                    >ペアを正しく識別しました （正確さ：<span id="accuracy-percentage">0</span>％）。
+                <h2 style="font-size: 12px">総括</h2>
+                <p style="font-size: 12px">
+                    あなたは<span id="total-count" style="font-size: 12px">12</span>ペアのうち<span
+                        id="correct-count"
+                        style="font-size: 12px"
+                        >0</span
+                    >ペアを正しく識別しました （正確さ：<span id="accuracy-percentage" style="font-size: 12px">0</span
+                    >％）。
                 </p>
                 <table>
                     <tr>
-                        <th>条件</th>
-                        <th>正解数</th>
-                        <th>合計</th>
-                        <th>正確さ</th>
+                        <th style="font-size: 12px">条件</th>
+                        <th style="font-size: 12px">正解数</th>
+                        <th style="font-size: 12px">合計</th>
+                        <th style="font-size: 12px">正確さ</th>
                     </tr>
                     <tr>
-                        <td>同じ環境</td>
-                        <td id="same-correct">0</td>
-                        <td id="same-total">6</td>
-                        <td id="same-accuracy">0%</td>
+                        <td style="font-size: 12px">同じ環境</td>
+                        <td id="same-correct" style="font-size: 12px">0</td>
+                        <td id="same-total" style="font-size: 12px">6</td>
+                        <td id="same-accuracy" style="font-size: 12px">0%</td>
                     </tr>
                     <tr>
-                        <td>異なる環境</td>
-                        <td id="diff-correct">0</td>
-                        <td id="diff-total">6</td>
-                        <td id="diff-accuracy">0%</td>
+                        <td style="font-size: 12px">異なる環境</td>
+                        <td id="diff-correct" style="font-size: 12px">0</td>
+                        <td id="diff-total" style="font-size: 12px">6</td>
+                        <td id="diff-accuracy" style="font-size: 12px">0%</td>
                     </tr>
                 </table>
             </div>
             <div class="results-details">
-                <h2>試行詳細</h2>
+                <h2 style="font-size: 12px">試行詳細</h2>
                 <div id="trial-results-container"></div>
             </div>
-            <button id="restart-button">新しい実験を開始</button>
+            <button id="restart-button" style="font-size: 12px">新しい実験を開始</button>
         </div>
 
         <script>
@@ -411,40 +514,61 @@
                     // オーディオコンテキストの作成
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
+                    // 正しいパス（直接アクセスできることを確認済み）
+                    const basePath = '/experiment/audio/';
+
                     // オーディオファイルのパスを定義
                     const audioFiles = [
-                        './audio/csv1.wav',
-                        './audio/csv2.wav',
-                        './audio/csv3.wav',
-                        './audio/csv4.wav',
-                        './audio/csv5.wav',
-                        './audio/csv6.wav',
+                        basePath + 'csv1.wav',
+                        basePath + 'csv2.wav',
+                        basePath + 'csv3.wav',
+                        basePath + 'csv4.wav',
+                        basePath + 'csv5.wav',
+                        basePath + 'csv6.wav',
                     ];
 
-                    // オーディオファイルの読み込み
-                    const loadPromises = audioFiles.map((file, index) => loadAudioFile(file, index));
+                    console.log('Loading audio files from:', audioFiles);
 
-                    // すべてのファイルが読み込まれるかタイムアウトするまで待機
-                    const timeoutPromise = new Promise((resolve) => {
-                        setTimeout(() => resolve('timeout'), 10000);
-                    });
+                    // ローディングメッセージを更新
+                    elements.audioCheckMessage.innerHTML = `
+                    <p style="font-size: 12px;">音声ファイルを読み込み中...<br>これには時間がかかる場合があります。</p>
+                    <div class="spinner"></div>
+                    <p style="font-size: 12px;" id="loading-progress">0/6 ファイル読み込み完了</p>
+                `;
+                    const progressElement = document.getElementById('loading-progress');
 
-                    const result = await Promise.race([Promise.all(loadPromises), timeoutPromise]);
+                    // 一つずつファイルを読み込む（並列ではなく順次ロード）
+                    audioBuffers = new Array(audioFiles.length).fill(null);
+                    let loadedCount = 0;
 
-                    if (result === 'timeout') {
-                        // タイムアウトした場合、いくつのファイルが読み込まれたかを確認
-                        const loadedFiles = audioBuffers.filter((buffer) => buffer !== null).length;
-
-                        if (loadedFiles === 0) {
-                            // ファイルがまったく読み込まれていない場合、エラーを表示してシミュレーションモードに切り替え
-                            showError('音声ファイルを読み込めませんでした。シミュレーションモードに切り替えます。');
-                            createSimulatedAudioBuffers();
-                        } else if (loadedFiles < audioFiles.length) {
-                            // 一部のファイルが読み込まれた場合、利用可能なファイルを使用
-                            showError(
-                                `${audioFiles.length}個中${loadedFiles}個の音声ファイルしか読み込めませんでした。利用可能なファイルを使用します。`
-                            );
+                    for (let i = 0; i < audioFiles.length; i++) {
+                        try {
+                            const buffer = await loadAudioFile(audioFiles[i], i);
+                            if (buffer) {
+                                loadedCount++;
+                                if (progressElement) {
+                                    progressElement.textContent = `${loadedCount}/6 ファイル読み込み完了`;
+                                }
+                            }
+                        } catch (error) {
+                            console.error(`Failed to load file ${audioFiles[i]}:`, error);
                         }
+                    }
+
+                    // ファイルの読み込み結果を確認
+                    const loadedFiles = audioBuffers.filter((buffer) => buffer !== null).length;
+
+                    if (loadedFiles === 0) {
+                        // ファイルがまったく読み込まれていない場合、エラーを表示してシミュレーションモードに切り替え
+                        showError('音声ファイルを読み込めませんでした。シミュレーションモードに切り替えます。');
+                        createSimulatedAudioBuffers();
+                    } else if (loadedFiles < audioFiles.length) {
+                        // 一部のファイルが読み込まれた場合、利用可能なファイルを使用
+                        showError(
+                            `${audioFiles.length}個中${loadedFiles}個の音声ファイルしか読み込めませんでした。利用可能なファイルを使用します。`
+                        );
+                    } else {
+                        console.log('All audio files loaded successfully!');
                     }
 
                     // 試行の作成
@@ -469,22 +593,45 @@
                 elements.errorMessage.textContent = message;
                 elements.errorMessage.style.display = 'block';
                 console.warn(message);
+
+                // エラーの詳細情報を表示
+                const detailsDiv = document.createElement('div');
+                detailsDiv.style.fontSize = '12px';
+                detailsDiv.style.marginTop = '8px';
+                detailsDiv.innerHTML = `
+                <strong>デバッグ情報:</strong><br>
+                ブラウザ: ${navigator.userAgent}<br>
+                URL: ${window.location.href}<br>
+                パス: ${window.location.pathname}<br>
+            `;
+                elements.errorMessage.appendChild(detailsDiv);
             }
 
             // オーディオファイルを読み込みPromiseを返す
             async function loadAudioFile(url, index) {
                 try {
+                    console.log(`Attempting to load: ${url}`);
                     const response = await fetch(url);
                     if (!response.ok) {
+                        console.error(`Failed to load ${url}: ${response.status} ${response.statusText}`);
                         throw new Error(`${url}の読み込みに失敗しました: ${response.status} ${response.statusText}`);
                     }
 
+                    console.log(`Successfully fetched: ${url}`);
                     const arrayBuffer = await response.arrayBuffer();
-                    const decodedData = await audioContext.decodeAudioData(arrayBuffer);
+                    console.log(`Got array buffer for: ${url}, size: ${arrayBuffer.byteLength} bytes`);
 
-                    // デコードされたオーディオデータを保存
-                    audioBuffers[index] = decodedData;
-                    return decodedData;
+                    try {
+                        const decodedData = await audioContext.decodeAudioData(arrayBuffer);
+                        console.log(`Successfully decoded: ${url}, duration: ${decodedData.duration}s`);
+
+                        // デコードされたオーディオデータを保存
+                        audioBuffers[index] = decodedData;
+                        return decodedData;
+                    } catch (decodeError) {
+                        console.error(`Error decoding audio data for ${url}:`, decodeError);
+                        throw decodeError;
+                    }
                 } catch (error) {
                     console.error(`オーディオファイル${url}の読み込み中にエラーが発生しました:`, error);
                     audioBuffers[index] = null;
@@ -649,7 +796,6 @@
                 elements.ratingContainer.style.display = 'none';
                 elements.playButton.disabled = false;
                 elements.replayButton.disabled = true;
-
                 elements.segment1Timeline.classList.remove('active-segment');
                 elements.segment2Timeline.classList.remove('active-segment');
                 canRate = false;
@@ -710,7 +856,7 @@
                 currentSource = source1;
                 currentSegment = 1;
 
-                // セグメント1のインジケータを表示
+                // セグメント1をアクティブにする
                 elements.segment1Timeline.classList.add('active-segment');
 
                 // 進捗の更新を設定
@@ -831,6 +977,7 @@
                     const trial = response.trialData;
                     const trialElement = document.createElement('div');
                     trialElement.className = `result-item ${response.correct ? 'correct' : 'incorrect'}`;
+                    trialElement.style.fontSize = '12px';
 
                     const typeText =
                         trial.type === 'same'
@@ -846,9 +993,9 @@
                     ][response.rating - 1];
 
                     trialElement.innerHTML = `
-                    <strong>試行 ${index + 1}:</strong> ${typeText}<br>
+                    <strong style="font-size: 12px;">試行 ${index + 1}:</strong> ${typeText}<br>
                     あなたの評価: ${response.rating} (${ratingText})<br>
-                    <span style="color: ${response.correct ? '#2ecc71' : '#e74c3c'}">
+                    <span style="color: ${response.correct ? '#2ecc71' : '#e74c3c'}; font-size: 12px;">
                         ${response.correct ? '正解' : '不正解'}
                     </span>
                 `;
