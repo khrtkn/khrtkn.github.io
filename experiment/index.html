@@ -517,7 +517,7 @@
             let audioProgressInterval;
             let currentSource = null;
             let startTime = 0;
-            let segmentDuration = 12; // 各セグメント14秒
+            let segmentDuration = 10;
             let silenceDuration = 2; // セグメント間に2秒の無音
             const totalTrials = 15;
             let segmentTimestamp = 0;
@@ -574,10 +574,7 @@
                     // オーディオコンテキストの作成
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-                    // 絶対URLを使用（直接アクセス可能なURL）
                     const baseUrl = 'https://khrtkn.github.io/experiment/audio/';
-
-                    // オーディオファイルのパスを定義
                     const audioFiles = [
                         baseUrl + '1.wav',
                         baseUrl + '2.wav',
@@ -591,82 +588,89 @@
 
                     // ローディングメッセージを更新
                     elements.audioCheckMessage.innerHTML = `
-                    <p style="font-size: 12px;">音声ファイルを読み込み中...<br>これには時間がかかる場合があります。</p>
-                    <div class="spinner"></div>
-                    <p style="font-size: 12px;" id="loading-progress">0/6 ファイル読み込み完了</p>
-                `;
+            <p style="font-size: 12px;">音声ファイルを読み込み中...<br>これには時間がかかる場合があります。</p>
+            <div class="spinner"></div>
+            <p style="font-size: 12px;" id="loading-progress">0/6 ファイル読み込み完了</p>
+        `;
                     const progressElement = document.getElementById('loading-progress');
 
-                    // 一つずつファイルを読み込む（並列ではなく順次ロード）
+                    // タイムアウト機能を追加：読み込みが長すぎる場合に自動的にシミュレーションモードに切り替える
+                    const loadTimeout = setTimeout(() => {
+                        console.warn('音声ファイルの読み込みがタイムアウトしました');
+                        showError(
+                            '音声ファイルの読み込みに時間がかかりすぎています。シミュレーションモードに切り替えます。'
+                        );
+                        createSimulatedAudioBuffers();
+                        enableStartButton('実験を開始（シミュレーションモード）');
+                        elements.audioCheckMessage.style.display = 'none';
+                    }, 30000); // 30秒タイムアウト
+
+                    // 一つずつファイルを読み込む
                     audioBuffers = new Array(audioFiles.length).fill(null);
                     let loadedCount = 0;
+                    let successfullyLoaded = true;
 
                     for (let i = 0; i < audioFiles.length; i++) {
                         try {
                             const buffer = await loadAudioFile(audioFiles[i], i);
-                            console.log(`File ${i + 1} loaded, buffer:`, buffer ? 'success' : 'null');
                             if (buffer) {
                                 loadedCount++;
-                                console.log(`Incremented loadedCount to ${loadedCount}`);
+                                // UI更新を確実に行う
                                 if (progressElement) {
                                     progressElement.textContent = `${loadedCount}/6 ファイル読み込み完了`;
-                                    console.log(`Updated progress text to: ${progressElement.textContent}`);
                                 }
+                            } else {
+                                successfullyLoaded = false;
                             }
                         } catch (error) {
-                            console.error(`Failed to load file ${audioFiles[i]}:`, error);
+                            console.error(
+                                `オーディオファイル${audioFiles[i]}の読み込み中にエラーが発生しました:`,
+                                error
+                            );
+                            successfullyLoaded = false;
                         }
                     }
 
-                    if (progressElement) {
-                        progressElement.textContent = `6/6 ファイル読み込み完了`;
-                        console.log('Final progress manually set to 6/6');
-                    }
+                    // タイムアウトをクリア
+                    clearTimeout(loadTimeout);
 
-                    // ファイルの読み込み結果を確認
-                    // ファイルの読み込み結果を確認する箇所で、詳細なデバッグ情報を表示
-                    const loadedFiles = audioBuffers.filter((buffer) => buffer !== null).length;
-                    console.log(`実際に読み込まれたファイル数: ${loadedFiles}/${audioFiles.length}`);
-                    console.log('Audio buffers の詳細:', audioBuffers);
-
-                    if (loadedFiles === 0) {
-                        // ファイルがまったく読み込まれていない場合
-                        console.log('条件1: ファイルが読み込まれていません');
+                    // 読み込み結果に基づいてUIを更新
+                    if (loadedCount === 0) {
                         showError('音声ファイルを読み込めませんでした。シミュレーションモードに切り替えます。');
                         createSimulatedAudioBuffers();
-                    } else if (loadedFiles < audioFiles.length) {
-                        // 一部のファイルが読み込まれた場合
-                        console.log('条件2: 一部のファイルのみ読み込まれました');
+                        enableStartButton('実験を開始（シミュレーションモード）');
+                    } else if (loadedCount < audioFiles.length) {
                         showError(
-                            `${audioFiles.length}個中${loadedFiles}個の音声ファイルしか読み込めませんでした。利用可能なファイルを使用します。`
+                            `${audioFiles.length}個中${loadedCount}個の音声ファイルしか読み込めませんでした。利用可能なファイルを使用します。`
                         );
+                        enableStartButton('実験を開始（一部のファイルで）');
                     } else {
-                        console.log('条件3: すべてのファイルが読み込まれました');
-                        console.log('All audio files loaded successfully!');
+                        console.log('すべての音声ファイルが正常に読み込まれました！');
+                        enableStartButton('実験を開始');
                     }
-
-                    // これらの条件のいずれかが通過した後
-                    console.log('ボタンの状態を変更する前:', elements.startButton.disabled);
-                    elements.startButton.disabled = false;
-                    console.log('ボタンの状態を変更した後:', elements.startButton.disabled);
-                    elements.startButton.textContent = '実験を開始';
 
                     // 試行の作成
                     createTrials();
-
-                    // 開始ボタンの有効化
-                    elements.startButton.disabled = false;
-                    elements.startButton.textContent = '実験を開始';
                     elements.audioCheckMessage.style.display = 'none';
                 } catch (error) {
                     console.error('オーディオの初期化中にエラーが発生しました:', error);
                     showError('オーディオを初期化できませんでした。代わりにシミュレーションモードを使用します。');
                     createSimulatedAudioBuffers();
                     createTrials();
-                    elements.startButton.disabled = false;
-                    elements.startButton.textContent = '実験を開始（シミュレーションモード）';
+                    enableStartButton('実験を開始（シミュレーションモード）');
                     elements.audioCheckMessage.style.display = 'none';
                 }
+            }
+
+            function enableStartButton(text) {
+                elements.startButton.disabled = false;
+                elements.startButton.textContent = text || '実験を開始';
+
+                // 強制的にUIを更新するために遅延実行
+                setTimeout(() => {
+                    elements.startButton.disabled = false;
+                    elements.startButton.textContent = text || '実験を開始';
+                }, 100);
             }
 
             function showError(message) {
@@ -692,25 +696,32 @@
                 try {
                     console.log(`[DEBUG] 開始: ファイル ${index + 1} (${url}) の読み込みを試行します`);
 
-                    const response = await fetch(url);
+                    // 10秒のフェッチタイムアウトを設定
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+                    const response = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+
                     if (!response.ok) {
-                        console.error(`Failed to load ${url}: ${response.status} ${response.statusText}`);
                         throw new Error(`${url}の読み込みに失敗しました: ${response.status} ${response.statusText}`);
                     }
 
-                    console.log(`Successfully fetched: ${url}`);
                     const arrayBuffer = await response.arrayBuffer();
-                    console.log(`Got array buffer for: ${url}, size: ${arrayBuffer.byteLength} bytes`);
+
+                    // デコードタイムアウト機能を追加
+                    const decodePromise = audioContext.decodeAudioData(arrayBuffer);
+                    const timeoutPromise = new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error('デコードがタイムアウトしました')), 15000)
+                    );
 
                     try {
-                        const decodedData = await audioContext.decodeAudioData(arrayBuffer);
-                        console.log(`Successfully decoded: ${url}, duration: ${decodedData.duration}s`);
-
-                        // デコードされたオーディオデータを保存
+                        // どちらか早く完了した方を採用
+                        const decodedData = await Promise.race([decodePromise, timeoutPromise]);
                         audioBuffers[index] = decodedData;
                         return decodedData;
                     } catch (decodeError) {
-                        console.error(`Error decoding audio data for ${url}:`, decodeError);
+                        console.error(`${url}の音声データのデコード中にエラーが発生しました:`, decodeError);
                         throw decodeError;
                     }
                 } catch (error) {
@@ -790,9 +801,17 @@
                         const start1 = Math.random() * maxStartTime;
                         let start2;
 
-                        // セグメントが重複しないようにする
+                        // 無限ループ防止: 最大試行回数を設定
+                        let attempts = 0;
+                        const maxAttempts = 50;
                         do {
                             start2 = Math.random() * maxStartTime;
+                            attempts++;
+                            // 最大試行回数を超えたら、強制的に離れた位置を使用
+                            if (attempts > maxAttempts) {
+                                start2 = (start1 + segmentDuration * 1.5) % maxStartTime;
+                                break;
+                            }
                         } while (Math.abs(start1 - start2) < segmentDuration);
 
                         trials.push({
