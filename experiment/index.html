@@ -615,6 +615,10 @@
                         }
                     }
 
+                    if (progressElement) {
+                        progressElement.textContent = `${loadedCount}/6 ファイル読み込み完了`;
+                    }
+
                     // ファイルの読み込み結果を確認
                     const loadedFiles = audioBuffers.filter((buffer) => buffer !== null).length;
 
@@ -670,7 +674,8 @@
             // オーディオファイルを読み込みPromiseを返す
             async function loadAudioFile(url, index) {
                 try {
-                    console.log(`Attempting to load: ${url}`);
+                    console.log(`[DEBUG] 開始: ファイル ${index + 1} (${url}) の読み込みを試行します`);
+
                     const response = await fetch(url);
                     if (!response.ok) {
                         console.error(`Failed to load ${url}: ${response.status} ${response.statusText}`);
