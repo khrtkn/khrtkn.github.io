@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { projects } from '../constants/projects';
+import { hiddenProjectSlugs } from '../constants/hiddenProjects';
 import { useNavigate } from 'react-router-dom';
 
 const WorksDetail = () => {
     const { slug } = useParams();
     const project = projects.find((p) => p.slug === slug);
+    const isHidden = hiddenProjectSlugs.includes(slug);
     const navigate = useNavigate();
     const [fadeIn, setFadeIn] = useState(false);
 
@@ -14,7 +16,7 @@ const WorksDetail = () => {
         setFadeIn(true);
     }, []);
 
-    if (!project) return <div>Project not found</div>;
+    if (!project || isHidden) return <div>Project not found</div>;
 
     return (
         <div className='works'>
