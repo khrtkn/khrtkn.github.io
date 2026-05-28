@@ -12,7 +12,7 @@
         "react-router-dom": "^6.29.0",
         "react-scripts": "5.0.1"
     },
-    "homepage": "https://khrtkn.github.io/khr.github.io",
+    "homepage": "https://kihirotokuno.com",
     "scripts": {
         "predeploy": "npm run build",
         "deploy": "gh-pages -d build",

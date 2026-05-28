@@ -10,7 +10,7 @@ import './style/styleguide.css';
 
 function App() {
   return (
-    <Router basename="/khr.github.io">
+    <Router>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />

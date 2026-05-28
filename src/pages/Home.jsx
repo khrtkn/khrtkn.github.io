@@ -14,6 +14,8 @@ const Home = () => {
     const shapeSize = 200;
 
     const setup = (p5, canvasParentRef) => {
+        p5.pixelDensity(1);
+        p5.frameRate(30);
         p5.createCanvas(window.innerWidth, window.innerHeight).parent(canvasParentRef);
 
         const Engine = Matter.Engine;

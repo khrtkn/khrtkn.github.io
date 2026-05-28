@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { projects } from '../constants/projects';
-import { hiddenProjectSlugs } from '../constants/hiddenProjects';
 import { useNavigate } from 'react-router-dom';
+import { webpSource } from '../utils/images';
 
 const WorksDetail = () => {
     const { slug } = useParams();
     const project = projects.find((p) => p.slug === slug);
-    const isHidden = hiddenProjectSlugs.includes(slug);
     const navigate = useNavigate();
     const [fadeIn, setFadeIn] = useState(false);
 
@@ -16,7 +15,7 @@ const WorksDetail = () => {
         setFadeIn(true);
     }, []);
 
-    if (!project || isHidden) return <div>Project not found</div>;
+    if (!project) return <div>Project not found</div>;
 
     return (
         <div className='works'>
@@ -34,7 +33,16 @@ const WorksDetail = () => {
                     transition: 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out',
                 }}
             >
-                <img className='img-header' src={project.imageHeader} />
+                <img
+                    className='img-header'
+                    src={webpSource(project.imageHeader)}
+                    alt={project.titleshort}
+                    loading='eager'
+                    decoding='async'
+                    fetchPriority='high'
+                    width='1280'
+                    height='332'
+                />
             </div>
 
             <div
@@ -84,8 +92,12 @@ const WorksDetail = () => {
                                             <img
                                                 key={idx}
                                                 className='img'
-                                                src={image}
-                                                alt={`${project.title} ${index + 1}`}
+                                                src={webpSource(image)}
+                                                alt={`${project.titleshort} ${index + 1}-${idx + 1}`}
+                                                loading='lazy'
+                                                decoding='async'
+                                                width='1280'
+                                                height='720'
                                             />
                                         );
                                     })}
@@ -97,7 +109,7 @@ const WorksDetail = () => {
 
                 <div className='container-link'>
                     {project.links.map((link, index) => (
-                        <a key={index} href={link.href} className='link' target='_blank'>
+                        <a key={index} href={link.href} className='link' target='_blank' rel='noreferrer'>
                             <span className='body-3'>{link.text}</span>
                         </a>
                     ))}
