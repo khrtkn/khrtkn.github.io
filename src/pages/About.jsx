@@ -1,11 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 import { webpSource } from '../utils/images';
+import { localizedRoute } from '../utils/language';
 import '../style/styleguide.css';
 
-const About = () => {
+const aboutContent = {
+    ja: {
+        heading: ['とくの　きひろ', 'TOKUNO KHIRO'],
+        body: '2024年に多摩美術大学大学院情報デザイン領域を修了。AR技術を用いた共同体験の研究を国立民族学博物館や国立科学博物館と行う。事業会社でのUXディレクションを経て、現在はインクルーシブデザインスタジオ CULUMU に所属。',
+        resume: '履歴書・CV　＞',
+        portfolio: 'ポートフォリオ（PDF）　＞',
+    },
+    en: {
+        heading: ['Kihiro Tokuno'],
+        body: 'Kihiro Tokuno completed his master\'s degree in Information Design at Tama Art University in 2024. He has conducted research on collaborative experiences using AR technology with the National Museum of Ethnology and the National Museum of Nature and Science. After working in corporate UX direction, he is now a member of the inclusive design studio CULUMU.',
+        resume: 'Resume / CV >',
+        portfolio: 'Portfolio (PDF) >',
+    },
+};
+
+const About = ({ language = 'ja' }) => {
     const navigate = useNavigate();
     const [fadeIn, setFadeIn] = useState(false);
+    const content = aboutContent[language] || aboutContent.ja;
 
     useEffect(() => {
         // ページマウント時にフェードイン開始
@@ -14,11 +32,7 @@ const About = () => {
 
     return (
         <div className='works'>
-            <div className='header'>
-                <a href={'/'}>
-                    <img src='/assets/Logo.svg' alt='Logo' className='logo' />
-                </a>
-            </div>
+            <Header language={language} />
             <div
                 className='image-header'
                 style={{
@@ -47,9 +61,12 @@ const About = () => {
                 }}
             >
                 <h1 className='heading'>
-                    とくの　きひろ
-                    <br />
-                    TOKUNO KHIRO
+                    {content.heading.map((line, index) => (
+                        <React.Fragment key={line}>
+                            {line}
+                            {index < content.heading.length - 1 && <br />}
+                        </React.Fragment>
+                    ))}
                 </h1>
                 <div className='container-info'>
                     <div className='container-info-2'>
@@ -60,9 +77,7 @@ const About = () => {
 
                 <div className='div-2'>
                     <div className='container-info-sub'>
-                        <p className='body-2'>
-                            2024年に多摩美術大学大学院情報デザイン領域を修了。AR技術を用いた共同体験の研究を国立民族学博物館や国立科学博物館と行う。事業会社でのUXディレクションを経て、現在はインクルーシブデザインスタジオ CULUMU に所属。
-                        </p>
+                        <p className='body-2'>{content.body}</p>
                     </div>
                 </div>
 
@@ -73,7 +88,7 @@ const About = () => {
                         target='_blank'
                         rel='noreferrer'
                     >
-                        <span className='body-3'>履歴書・CV　＞</span>
+                        <span className='body-3'>{content.resume}</span>
                     </a>
 
                     <a
@@ -82,10 +97,10 @@ const About = () => {
                         target='_blank'
                         rel='noreferrer'
                     >
-                        <span className='body-3'>ポートフォリオ（PDF）　＞</span>
+                        <span className='body-3'>{content.portfolio}</span>
                     </a>
                 </div>
-                <button className='back-button' onClick={() => navigate('/')}>
+                <button className='back-button' onClick={() => navigate(localizedRoute(language, '/'))}>
                     <img src='/assets/Arrow.svg' alt='Back' />
                 </button>
             </div>

@@ -1,29 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { projects } from '../constants/projects';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
+import { getProjectBySlug } from '../constants/localizedProjects';
 import { webpSource } from '../utils/images';
+import { localizedRoute } from '../utils/language';
 
-const WorksDetail = () => {
+const labels = {
+    ja: {
+        timeline: '制作期間',
+        role: '担当',
+        tools: '使用ツール',
+        discipline: '分野',
+        notFound: 'Project not found',
+    },
+    en: {
+        timeline: 'Timeline',
+        role: 'Role',
+        tools: 'Tools',
+        discipline: 'Field',
+        notFound: 'Project not found',
+    },
+};
+
+const WorksDetail = ({ language = 'ja' }) => {
     const { slug } = useParams();
-    const project = projects.find((p) => p.slug === slug);
+    const project = getProjectBySlug(slug, language);
     const navigate = useNavigate();
     const [fadeIn, setFadeIn] = useState(false);
+    const pageLabels = labels[language] || labels.ja;
 
     useEffect(() => {
         // ページマウント時にフェードイン開始
         setFadeIn(true);
     }, []);
 
-    if (!project) return <div>Project not found</div>;
+    if (!project) return <div>{pageLabels.notFound}</div>;
 
     return (
         <div className='works'>
-            <div className='header'>
-                <a href={'/'}>
-                    <img src='/assets/Logo.svg' alt='Logo' className='logo' />
-                </a>
-            </div>
+            <Header language={language} />
 
             <div
                 className='image-header'
@@ -63,19 +79,19 @@ const WorksDetail = () => {
                 </h1>
                 <div className='container-info'>
                     <div className='container-info-2'>
-                        <span className='text-wrapper'>制作期間</span>
+                        <span className='text-wrapper'>{pageLabels.timeline}</span>
                         <p className='div'>{project.timeline}</p>
                     </div>
                     <div className='container-info-2'>
-                        <span className='text-wrapper'>担当</span>
+                        <span className='text-wrapper'>{pageLabels.role}</span>
                         <p className='div'>{project.team}</p>
                     </div>
                     <div className='container-info-2'>
-                        <span className='text-wrapper'>使用ツール</span>
+                        <span className='text-wrapper'>{pageLabels.tools}</span>
                         <p className='div'>{project.tools}</p>
                     </div>
                     <div className='container-info-2'>
-                        <span className='text-wrapper'>分野</span>
+                        <span className='text-wrapper'>{pageLabels.discipline}</span>
                         <p className='div'>{project.discipline}</p>
                     </div>
                 </div>
@@ -114,7 +130,7 @@ const WorksDetail = () => {
                         </a>
                     ))}
                 </div>
-                <button className='back-button' onClick={() => navigate('/works')}>
+                <button className='back-button' onClick={() => navigate(localizedRoute(language, '/works'))}>
                     <img src='/assets/Arrow.svg' alt='Back' />
                 </button>
             </div>

@@ -13,10 +13,14 @@ function App() {
     <Router>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/works" element={<Works />} />
-        <Route path="/works/:slug" element={<WorksDetail />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/" element={<Home language="ja" />} />
+        <Route path="/works" element={<Works language="ja" />} />
+        <Route path="/works/:slug" element={<WorksDetail language="ja" />} />
+        <Route path="/about" element={<About language="ja" />} />
+        <Route path="/en" element={<Home language="en" />} />
+        <Route path="/en/works" element={<Works language="en" />} />
+        <Route path="/en/works/:slug" element={<WorksDetail language="en" />} />
+        <Route path="/en/about" element={<About language="en" />} />
       </Routes>
     </Router>
 

@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { projects } from '../constants/projects';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
+import { getProjects } from '../constants/localizedProjects';
 import { webpSource } from '../utils/images';
+import { localizedRoute } from '../utils/language';
 import '../style/styleguide.css';
 
-const Works = () => {
+const Works = ({ language = 'ja' }) => {
     const navigate = useNavigate();
     const [fadeIn, setFadeIn] = useState(false);
+    const projects = getProjects(language);
 
     useEffect(() => {
         // ページマウント時にフェードイン開始
@@ -17,11 +20,7 @@ const Works = () => {
     return (
         <div className='works'>
             {/* ヘッダー */}
-            <div className='header'>
-                <a href={'/'}>
-                    <img src='/assets/Logo.svg' alt='Logo' className='logo' />
-                </a>
-            </div>
+            <Header language={language} />
 
             {/* 本文エリア */}
             <div
@@ -33,7 +32,7 @@ const Works = () => {
                 }}
             >
                 {projects.map((project, index) => (
-                    <Link key={project.slug} to={`/works/${project.slug}`} className='project-link'>
+                    <Link key={project.slug} to={localizedRoute(language, `/works/${project.slug}`)} className='project-link'>
                         <div className='top-button-explore'>
                             <img
                                 className='image-wrapper'
@@ -52,7 +51,7 @@ const Works = () => {
                         </div>
                     </Link>
                 ))}
-                <button className='back-button' onClick={() => navigate('/')}>
+                <button className='back-button' onClick={() => navigate(localizedRoute(language, '/'))}>
                     <img src='/assets/Arrow.svg' alt='Back' />
                 </button>
             </div>

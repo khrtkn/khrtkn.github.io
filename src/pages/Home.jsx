@@ -2,9 +2,11 @@ import React from 'react';
 import Sketch from 'react-p5';
 import { useNavigate } from 'react-router-dom';
 import Matter from 'matter-js';
+import Header from '../components/Header';
+import { localizedRoute } from '../utils/language';
 import '../style/styleguide.css';
 
-const Home = () => {
+const Home = ({ language = 'ja' }) => {
     const navigate = useNavigate();
     let engine;
     let world;
@@ -108,10 +110,10 @@ const Home = () => {
         if (clickedBody) {
             switch (clickedBody.label) {
                 case 'About':
-                    navigate('/about');
+                    navigate(localizedRoute(language, '/about'));
                     break;
                 case 'Works':
-                    navigate('/works');
+                    navigate(localizedRoute(language, '/works'));
                     break;
                 default:
                     break;
@@ -160,9 +162,7 @@ const Home = () => {
 
     return (
         <div className='home'>
-            <div className='header'>
-                <img src='/assets/Logo.svg' alt='Logo' className='logo' />
-            </div>
+            <Header language={language} />
             <div className='canvas-container'>
                 <Sketch setup={setup} draw={draw} mousePressed={mousePressed} windowResized={windowResized} />
             </div>
