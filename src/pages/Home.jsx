@@ -6,7 +6,6 @@ import { localizedRoute } from '../utils/language';
 import '../style/styleguide.css';
 
 const SHAPE_SIZE = 200;
-const FRAME_MS = 1000 / 30;
 
 const randomBetween = (min, max) => Math.random() * (max - min) + min;
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -28,9 +27,6 @@ const Home = ({ language = 'ja' }) => {
         let width = window.innerWidth;
         let height = window.innerHeight;
         let animationFrame = null;
-        let lastFrameTime = 0;
-        let idleFrames = 0;
-        let isRunning = false;
         let disposed = false;
         let walls = [];
 
@@ -70,19 +66,9 @@ const Home = ({ language = 'ja' }) => {
         };
 
         const constrainPosition = (body) => {
-            const nextX = clamp(body.position.x, SHAPE_SIZE / 2, width - SHAPE_SIZE / 2);
-            const nextY = clamp(body.position.y, SHAPE_SIZE / 2, height - SHAPE_SIZE / 2);
-
-            if (nextX !== body.position.x || nextY !== body.position.y) {
-                Matter.Body.setVelocity(body, {
-                    x: nextX !== body.position.x ? 0 : body.velocity.x,
-                    y: nextY !== body.position.y ? 0 : body.velocity.y,
-                });
-            }
-
             Matter.Body.setPosition(body, {
-                x: nextX,
-                y: nextY,
+                x: clamp(body.position.x, SHAPE_SIZE / 2, width - SHAPE_SIZE / 2),
+                y: clamp(body.position.y, SHAPE_SIZE / 2, height - SHAPE_SIZE / 2),
             });
         };
 
@@ -117,38 +103,18 @@ const Home = ({ language = 'ja' }) => {
             drawShape(worksSquare, 'Works');
         };
 
-        const bodiesAreSettled = () => [topCircle, worksSquare].every((body) => body.speed < 0.03 && Math.abs(body.angularVelocity) < 0.003);
-
-        const tick = (time) => {
+        const tick = () => {
             if (disposed) return;
 
-            if (!lastFrameTime) {
-                lastFrameTime = time;
-            }
-
-            if (time - lastFrameTime >= FRAME_MS) {
-                Matter.Engine.update(engine, FRAME_MS);
-                constrainPosition(topCircle);
-                constrainPosition(worksSquare);
-                render();
-                lastFrameTime = time;
-                idleFrames = bodiesAreSettled() ? idleFrames + 1 : 0;
-
-                if (idleFrames > 60) {
-                    animationFrame = null;
-                    isRunning = false;
-                    return;
-                }
-            }
-
+            Matter.Engine.update(engine);
+            constrainPosition(topCircle);
+            constrainPosition(worksSquare);
+            render();
             animationFrame = window.requestAnimationFrame(tick);
         };
 
         const startAnimation = () => {
-            idleFrames = 0;
-            if (!isRunning && !disposed) {
-                isRunning = true;
-                lastFrameTime = 0;
+            if (!animationFrame && !disposed) {
                 animationFrame = window.requestAnimationFrame(tick);
             }
         };
@@ -177,7 +143,6 @@ const Home = ({ language = 'ja' }) => {
 
             applyRandomForce(topCircle);
             applyRandomForce(worksSquare);
-            startAnimation();
         };
 
         const handleResize = () => {
@@ -195,7 +160,6 @@ const Home = ({ language = 'ja' }) => {
             });
             resetWalls();
             render();
-            startAnimation();
         };
 
         resizeCanvas();
