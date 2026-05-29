@@ -73,6 +73,22 @@
   overflow: hidden;
 }
 
+.canvas-container,
+.home-canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+.home-canvas {
+  touch-action: manipulation;
+}
+
+.route-loading {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
 .works {
   align-items: center;
   background-color: #ffffff;

@@ -1,170 +1,233 @@
-import React from 'react';
-import Sketch from 'react-p5';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Matter from 'matter-js';
 import Header from '../components/Header';
 import { localizedRoute } from '../utils/language';
 import '../style/styleguide.css';
 
+const SHAPE_SIZE = 200;
+const FRAME_MS = 1000 / 30;
+
+const randomBetween = (min, max) => Math.random() * (max - min) + min;
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
 const Home = ({ language = 'ja' }) => {
     const navigate = useNavigate();
-    let engine;
-    let world;
-    let topCircle;
-    let worksSquare;
-    let walls = [];
-    const shapeSize = 200;
+    const canvasRef = useRef(null);
 
-    const setup = (p5, canvasParentRef) => {
-        p5.pixelDensity(1);
-        p5.frameRate(30);
-        p5.createCanvas(window.innerWidth, window.innerHeight).parent(canvasParentRef);
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const context = canvas?.getContext('2d', { alpha: true });
 
-        const Engine = Matter.Engine;
-        const World = Matter.World;
-        const Bodies = Matter.Bodies;
+        if (!canvas || !context) return undefined;
 
-        engine = Engine.create();
-        world = engine.world;
-        engine.world.gravity.y = 0.98;
+        const engine = Matter.Engine.create();
+        const world = engine.world;
+        world.gravity.y = 0.98;
 
-        // 中央のx座標を計算
-        const centerX = p5.width / 2;
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        let animationFrame = null;
+        let lastFrameTime = 0;
+        let idleFrames = 0;
+        let isRunning = false;
+        let disposed = false;
+        let walls = [];
 
-        // 円の作成（中央から±50pxの範囲でランダム）
-        const circleX = centerX + p5.random(-50, 50);
-        topCircle = Bodies.circle(circleX, -shapeSize, shapeSize / 2, {
+        const wallOptions = { isStatic: true, restitution: 0.3 };
+        const topCircle = Matter.Bodies.circle(width / 2 + randomBetween(-50, 50), -SHAPE_SIZE, SHAPE_SIZE / 2, {
             restitution: 0.8,
             friction: 0.1,
             frictionAir: 0.01,
             label: 'About',
         });
-
-        // 矩形の作成（中央から±50pxの範囲でランダム）
-        const squareX = centerX + p5.random(-50, 50);
-        worksSquare = Bodies.rectangle(squareX, -shapeSize, shapeSize, shapeSize, {
+        const worksSquare = Matter.Bodies.rectangle(width / 2 + randomBetween(-50, 50), -SHAPE_SIZE, SHAPE_SIZE, SHAPE_SIZE, {
             restitution: 0.3,
             friction: 0.1,
             frictionAir: 0.01,
             label: 'Works',
         });
 
-        // 壁の作成
-        const wallOptions = { isStatic: true, restitution: 0.3 };
-        walls = [
-            Bodies.rectangle(p5.width / 2, p5.height + 50, p5.width, 100, wallOptions),
-            Bodies.rectangle(-50, p5.height / 2, 100, p5.height, wallOptions),
-            Bodies.rectangle(p5.width + 50, p5.height / 2, 100, p5.height, wallOptions),
+        const makeWalls = () => [
+            Matter.Bodies.rectangle(width / 2, height + 50, width, 100, wallOptions),
+            Matter.Bodies.rectangle(-50, height / 2, 100, height, wallOptions),
+            Matter.Bodies.rectangle(width + 50, height / 2, 100, height, wallOptions),
         ];
 
-        // ワールドに追加
-        World.add(world, [topCircle, worksSquare, ...walls]);
-
-        Matter.Body.setVelocity(topCircle, { x: p5.random(-2, 2), y: 0 });
-        Matter.Body.setVelocity(worksSquare, { x: p5.random(-2, 2), y: 0 });
-        Matter.Body.setAngle(topCircle, p5.PI / 2);
-        Matter.Body.setAngle(worksSquare, p5.PI / 3);
-    };
-
-    // 残りのコードは変更なし
-    const draw = (p5) => {
-        p5.clear();
-        Matter.Engine.update(engine);
-
-        constrainPosition(p5, topCircle);
-        constrainPosition(p5, worksSquare);
-
-        drawShape(p5, topCircle, 'About', true);
-        drawShape(p5, worksSquare, 'Works');
-    };
-
-    const drawShape = (p5, body, text, isCircle = false) => {
-        p5.push();
-        p5.translate(body.position.x, body.position.y);
-        p5.rotate(body.angle);
-
-        p5.fill(255);
-        p5.stroke('#091420');
-        p5.strokeWeight(0.5);
-
-        if (isCircle) {
-            p5.ellipse(0, 0, shapeSize);
-        } else {
-            p5.rectMode(p5.CENTER);
-            p5.rect(0, 0, shapeSize, shapeSize);
-        }
-
-        p5.noStroke();
-        p5.fill(0);
-        p5.textAlign(p5.CENTER, p5.CENTER);
-        p5.drawingContext.font = '200 20px Gen Jyuu GothicL, Helvetica';
-        p5.text(text, 0, 0);
-        p5.pop();
-    };
-
-    const mousePressed = (p5) => {
-        const mouseVector = Matter.Vector.create(p5.mouseX, p5.mouseY);
-        const bodies = Matter.Composite.allBodies(world);
-        const clickedBody = Matter.Query.point(bodies, mouseVector)[0];
-
-        if (clickedBody) {
-            switch (clickedBody.label) {
-                case 'About':
-                    navigate(localizedRoute(language, '/about'));
-                    break;
-                case 'Works':
-                    navigate(localizedRoute(language, '/works'));
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            applyRandomForce(p5, topCircle);
-            applyRandomForce(p5, worksSquare);
-        }
-    };
-
-    const applyRandomForce = (p5, body) => {
-        const force = {
-            x: p5.random(-0.7, 0.7),
-            y: p5.random(-0.7, -0.7),
+        const resizeCanvas = () => {
+            canvas.width = width;
+            canvas.height = height;
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
         };
-        Matter.Body.applyForce(body, body.position, force);
-    };
 
-    const constrainPosition = (p5, body) => {
-        const minX = shapeSize / 2;
-        const maxX = p5.width - shapeSize / 2;
-        const minY = shapeSize / 2;
-        const maxY = p5.height - shapeSize / 2;
+        const resetWalls = () => {
+            if (walls.length) {
+                walls.forEach((wall) => Matter.Composite.remove(world, wall));
+            }
+            walls = makeWalls();
+            Matter.Composite.add(world, walls);
+        };
 
-        if (body.position.x < minX) Matter.Body.setPosition(body, { x: minX, y: body.position.y });
-        if (body.position.x > maxX) Matter.Body.setPosition(body, { x: maxX, y: body.position.y });
-        if (body.position.y < minY) Matter.Body.setPosition(body, { x: body.position.x, y: minY });
-        if (body.position.y > maxY) Matter.Body.setPosition(body, { x: body.position.x, y: maxY });
-    };
+        const constrainPosition = (body) => {
+            const nextX = clamp(body.position.x, SHAPE_SIZE / 2, width - SHAPE_SIZE / 2);
+            const nextY = clamp(body.position.y, SHAPE_SIZE / 2, height - SHAPE_SIZE / 2);
 
-    const windowResized = (p5) => {
-        p5.resizeCanvas(window.innerWidth, window.innerHeight);
-        if (engine && engine.world && engine.world.bodies) {
-            engine.world.bodies.forEach((body) => {
-                if (body && body.position) {
-                    Matter.Body.setPosition(body, {
-                        x: (body.position.x * window.innerWidth) / p5.width,
-                        y: (body.position.y * window.innerHeight) / p5.height,
-                    });
-                }
+            if (nextX !== body.position.x || nextY !== body.position.y) {
+                Matter.Body.setVelocity(body, {
+                    x: nextX !== body.position.x ? 0 : body.velocity.x,
+                    y: nextY !== body.position.y ? 0 : body.velocity.y,
+                });
+            }
+
+            Matter.Body.setPosition(body, {
+                x: nextX,
+                y: nextY,
             });
-        }
-        Matter.Body.setPosition(walls[0], { x: p5.width / 2, y: p5.height + 50 });
-        Matter.Body.setPosition(walls[2], { x: p5.width + 50, y: p5.height / 2 });
-    };
+        };
+
+        const drawShape = (body, text, isCircle = false) => {
+            context.save();
+            context.translate(body.position.x, body.position.y);
+            context.rotate(body.angle);
+            context.fillStyle = '#ffffff';
+            context.strokeStyle = '#091420';
+            context.lineWidth = 0.5;
+
+            context.beginPath();
+            if (isCircle) {
+                context.arc(0, 0, SHAPE_SIZE / 2, 0, Math.PI * 2);
+            } else {
+                context.rect(-SHAPE_SIZE / 2, -SHAPE_SIZE / 2, SHAPE_SIZE, SHAPE_SIZE);
+            }
+            context.fill();
+            context.stroke();
+
+            context.fillStyle = '#091420';
+            context.font = '200 20px "Gen Jyuu GothicL", Helvetica, sans-serif';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(text, 0, 0);
+            context.restore();
+        };
+
+        const render = () => {
+            context.clearRect(0, 0, width, height);
+            drawShape(topCircle, 'About', true);
+            drawShape(worksSquare, 'Works');
+        };
+
+        const bodiesAreSettled = () => [topCircle, worksSquare].every((body) => body.speed < 0.03 && Math.abs(body.angularVelocity) < 0.003);
+
+        const tick = (time) => {
+            if (disposed) return;
+
+            if (!lastFrameTime) {
+                lastFrameTime = time;
+            }
+
+            if (time - lastFrameTime >= FRAME_MS) {
+                Matter.Engine.update(engine, FRAME_MS);
+                constrainPosition(topCircle);
+                constrainPosition(worksSquare);
+                render();
+                lastFrameTime = time;
+                idleFrames = bodiesAreSettled() ? idleFrames + 1 : 0;
+
+                if (idleFrames > 60) {
+                    animationFrame = null;
+                    isRunning = false;
+                    return;
+                }
+            }
+
+            animationFrame = window.requestAnimationFrame(tick);
+        };
+
+        const startAnimation = () => {
+            idleFrames = 0;
+            if (!isRunning && !disposed) {
+                isRunning = true;
+                lastFrameTime = 0;
+                animationFrame = window.requestAnimationFrame(tick);
+            }
+        };
+
+        const applyRandomForce = (body) => {
+            Matter.Body.applyForce(body, body.position, {
+                x: randomBetween(-0.7, 0.7),
+                y: -0.7,
+            });
+        };
+
+        const handlePointerDown = (event) => {
+            const rect = canvas.getBoundingClientRect();
+            const pointer = Matter.Vector.create(event.clientX - rect.left, event.clientY - rect.top);
+            const clickedBody = Matter.Query.point(Matter.Composite.allBodies(world), pointer).find((body) => body.label === 'About' || body.label === 'Works');
+
+            if (clickedBody?.label === 'About') {
+                navigate(localizedRoute(language, '/about'));
+                return;
+            }
+
+            if (clickedBody?.label === 'Works') {
+                navigate(localizedRoute(language, '/works'));
+                return;
+            }
+
+            applyRandomForce(topCircle);
+            applyRandomForce(worksSquare);
+            startAnimation();
+        };
+
+        const handleResize = () => {
+            const previousWidth = width || window.innerWidth;
+            const previousHeight = height || window.innerHeight;
+            width = window.innerWidth;
+            height = window.innerHeight;
+
+            resizeCanvas();
+            [topCircle, worksSquare].forEach((body) => {
+                Matter.Body.setPosition(body, {
+                    x: clamp((body.position.x * width) / previousWidth, SHAPE_SIZE / 2, width - SHAPE_SIZE / 2),
+                    y: clamp((body.position.y * height) / previousHeight, SHAPE_SIZE / 2, height - SHAPE_SIZE / 2),
+                });
+            });
+            resetWalls();
+            render();
+            startAnimation();
+        };
+
+        resizeCanvas();
+        resetWalls();
+        Matter.Composite.add(world, [topCircle, worksSquare]);
+        Matter.Body.setVelocity(topCircle, { x: randomBetween(-2, 2), y: 0 });
+        Matter.Body.setVelocity(worksSquare, { x: randomBetween(-2, 2), y: 0 });
+        Matter.Body.setAngle(topCircle, Math.PI / 2);
+        Matter.Body.setAngle(worksSquare, Math.PI / 3);
+        render();
+        startAnimation();
+
+        canvas.addEventListener('pointerdown', handlePointerDown);
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            disposed = true;
+            if (animationFrame) {
+                window.cancelAnimationFrame(animationFrame);
+            }
+            canvas.removeEventListener('pointerdown', handlePointerDown);
+            window.removeEventListener('resize', handleResize);
+            Matter.Composite.clear(world, false);
+            Matter.Engine.clear(engine);
+        };
+    }, [language, navigate]);
 
     return (
         <div className='home'>
             <Header language={language} />
             <div className='canvas-container'>
-                <Sketch setup={setup} draw={draw} mousePressed={mousePressed} windowResized={windowResized} />
+                <canvas ref={canvasRef} className='home-canvas' aria-label='Portfolio navigation' />
             </div>
         </div>
     );
