@@ -23,6 +23,123 @@ const labels = {
     },
 };
 
+const renderValue = (value) => {
+    if (Array.isArray(value)) {
+        return value.join(', ');
+    }
+
+    return value || '';
+};
+
+const renderInlineText = (text, keyPrefix) => {
+    const nodes = [];
+    const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = linkPattern.exec(text)) !== null) {
+        if (match.index > lastIndex) {
+            nodes.push(text.slice(lastIndex, match.index));
+        }
+
+        nodes.push(
+            <a key={`${keyPrefix}-link-${match.index}`} href={match[2]} target='_blank' rel='noreferrer'>
+                {match[1]}
+            </a>
+        );
+        lastIndex = match.index + match[0].length;
+    }
+
+    if (lastIndex < text.length) {
+        nodes.push(text.slice(lastIndex));
+    }
+
+    return nodes;
+};
+
+const renderMarkdownBody = (body) => {
+    const blocks = [];
+    const lines = body.split('\n');
+    let paragraph = [];
+    let listItems = [];
+    let listType = null;
+
+    const flushParagraph = () => {
+        if (!paragraph.length) return;
+
+        const text = paragraph.join(' ');
+        const key = `paragraph-${blocks.length}`;
+        blocks.push(<p key={key}>{renderInlineText(text, key)}</p>);
+        paragraph = [];
+    };
+
+    const flushList = () => {
+        if (!listItems.length) return;
+
+        const key = `list-${blocks.length}`;
+        const Tag = listType === 'ol' ? 'ol' : 'ul';
+        blocks.push(
+            <Tag key={key}>
+                {listItems.map((item, index) => (
+                    <li key={`${key}-${index}`}>{renderInlineText(item, `${key}-${index}`)}</li>
+                ))}
+            </Tag>
+        );
+        listItems = [];
+        listType = null;
+    };
+
+    lines.forEach((line) => {
+        const trimmed = line.trim();
+
+        if (!trimmed) {
+            flushParagraph();
+            flushList();
+            return;
+        }
+
+        const heading = trimmed.match(/^(#{2,3})\s+(.+)$/);
+        if (heading) {
+            flushParagraph();
+            flushList();
+            const key = `heading-${blocks.length}`;
+            const Tag = heading[1].length === 2 ? 'h2' : 'h3';
+            blocks.push(
+                <Tag key={key} className={heading[1].length === 2 ? 'markdown-heading' : 'markdown-subheading'}>
+                    {renderInlineText(heading[2], key)}
+                </Tag>
+            );
+            return;
+        }
+
+        const bullet = trimmed.match(/^[*-]\s+(.+)$/);
+        if (bullet) {
+            flushParagraph();
+            if (listType && listType !== 'ul') flushList();
+            listType = 'ul';
+            listItems.push(bullet[1]);
+            return;
+        }
+
+        const numbered = trimmed.match(/^\d+\.\s+(.+)$/);
+        if (numbered) {
+            flushParagraph();
+            if (listType && listType !== 'ol') flushList();
+            listType = 'ol';
+            listItems.push(numbered[1]);
+            return;
+        }
+
+        flushList();
+        paragraph.push(trimmed);
+    });
+
+    flushParagraph();
+    flushList();
+
+    return blocks;
+};
+
 const WorksDetail = ({ language = 'ja' }) => {
     const { slug } = useParams();
     const project = getProjectBySlug(slug, language);
@@ -46,10 +163,14 @@ const WorksDetail = ({ language = 'ja' }) => {
             return (
                 <div className='body-2 body-copy'>
                     {section.body.map((paragraph, idx) => (
-                        <p key={idx}>{paragraph}</p>
+                        <p key={idx}>{renderInlineText(paragraph, `array-${idx}`)}</p>
                     ))}
                 </div>
             );
+        }
+
+        if (typeof section.body === 'string' && /(^|\n)\s*#{2,3}\s+|(^|\n)\s*[*-]\s+|(^|\n)\s*\d+\.\s+|\[[^\]]+\]\([^)]+\)/.test(section.body)) {
+            return <div className='body-2 markdown-body'>{renderMarkdownBody(section.body)}</div>;
         }
 
         return <p className='body-2'>{section.body}</p>;
@@ -98,19 +219,19 @@ const WorksDetail = ({ language = 'ja' }) => {
                 <div className='container-info'>
                     <div className='container-info-2'>
                         <span className='text-wrapper'>{pageLabels.timeline}</span>
-                        <p className='div'>{project.timeline}</p>
+                        <p className='div'>{renderValue(project.timeline)}</p>
                     </div>
                     <div className='container-info-2'>
                         <span className='text-wrapper'>{pageLabels.role}</span>
-                        <p className='div'>{project.team}</p>
+                        <p className='div'>{renderValue(project.team)}</p>
                     </div>
                     <div className='container-info-2'>
                         <span className='text-wrapper'>{pageLabels.tools}</span>
-                        <p className='div'>{project.tools}</p>
+                        <p className='div'>{renderValue(project.tools)}</p>
                     </div>
                     <div className='container-info-2'>
                         <span className='text-wrapper'>{pageLabels.discipline}</span>
-                        <p className='div'>{project.discipline}</p>
+                        <p className='div'>{renderValue(project.discipline)}</p>
                     </div>
                 </div>
 
@@ -132,7 +253,7 @@ const WorksDetail = ({ language = 'ja' }) => {
                 <div className='div-2'>
                     {project.sections.map((section, index) => (
                         <div key={index} className='container-info-sub'>
-                            <h2 className='heading-3'>{section.heading}</h2>
+                            {section.heading && <h2 className='heading-3'>{section.heading}</h2>}
                             {renderSectionBody(section)}
                             {section.images && (
                                 <div className={`image-grid ${section.imageMode === 'natural' ? 'image-grid--natural' : ''}`}>

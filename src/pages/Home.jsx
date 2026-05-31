@@ -6,6 +6,7 @@ import { localizedRoute } from '../utils/language';
 import '../style/styleguide.css';
 
 const SHAPE_SIZE = 200;
+const FRAME_INTERVAL = 1000 / 30;
 
 const randomBetween = (min, max) => Math.random() * (max - min) + min;
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -28,9 +29,10 @@ const Home = ({ language = 'ja' }) => {
         let height = window.innerHeight;
         let animationFrame = null;
         let disposed = false;
+        let lastFrameTime = 0;
         let walls = [];
 
-        const wallOptions = { isStatic: true, restitution: 0.3 };
+        const wallOptions = { isStatic: true, restitution: 0.6 };
         const topCircle = Matter.Bodies.circle(width / 2 + randomBetween(-50, 50), -SHAPE_SIZE, SHAPE_SIZE / 2, {
             restitution: 0.8,
             friction: 0.1,
@@ -38,7 +40,7 @@ const Home = ({ language = 'ja' }) => {
             label: 'About',
         });
         const worksSquare = Matter.Bodies.rectangle(width / 2 + randomBetween(-50, 50), -SHAPE_SIZE, SHAPE_SIZE, SHAPE_SIZE, {
-            restitution: 0.3,
+            restitution: 0.6,
             friction: 0.1,
             frictionAir: 0.01,
             label: 'Works',
@@ -103,13 +105,22 @@ const Home = ({ language = 'ja' }) => {
             drawShape(worksSquare, 'Works');
         };
 
-        const tick = () => {
+        const tick = (timestamp) => {
             if (disposed) return;
 
-            Matter.Engine.update(engine);
-            constrainPosition(topCircle);
-            constrainPosition(worksSquare);
-            render();
+            if (!lastFrameTime) {
+                lastFrameTime = timestamp;
+            }
+
+            const elapsed = timestamp - lastFrameTime;
+            if (elapsed >= FRAME_INTERVAL) {
+                Matter.Engine.update(engine, FRAME_INTERVAL);
+                constrainPosition(topCircle);
+                constrainPosition(worksSquare);
+                render();
+                lastFrameTime = timestamp - (elapsed % FRAME_INTERVAL);
+            }
+
             animationFrame = window.requestAnimationFrame(tick);
         };
 

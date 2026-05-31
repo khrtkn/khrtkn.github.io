@@ -307,18 +307,64 @@
 }
 
 .works .body-copy p,
-.works .body-html p {
+.works .body-html p,
+.works .markdown-body p,
+.works .markdown-body ul,
+.works .markdown-body ol,
+.works .markdown-body h2,
+.works .markdown-body h3 {
   margin: 0;
 }
 
-.works .body-html a {
+.works .markdown-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.works .body-html a,
+.works .body-copy a,
+.works .markdown-body a {
   color: #091420;
+  overflow-wrap: anywhere;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
 .works .body-html strong {
   font-weight: 600;
+}
+
+.works .markdown-body ul,
+.works .markdown-body ol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 1.35em;
+}
+
+.works .markdown-body li {
+  overflow-wrap: anywhere;
+}
+
+.works .markdown-heading {
+  color: #091420;
+  font-family: var(--font-heading2-font-family);
+  font-size: var(--font-heading2-font-size);
+  font-style: var(--font-heading2-font-style);
+  font-weight: var(--font-heading2-font-weight);
+  letter-spacing: var(--font-heading2-letter-spacing);
+  line-height: var(--font-heading2-line-height);
+}
+
+.works .markdown-subheading {
+  color: #091420;
+  font-family: var(--font-heading3-font-family);
+  font-size: 14px;
+  font-style: var(--font-heading3-font-style);
+  font-weight: var(--font-heading3-font-weight);
+  letter-spacing: var(--font-heading3-letter-spacing);
+  line-height: 180%;
 }
 
 .works .reference-list {
@@ -360,6 +406,28 @@
   flex-direction: column;
   overflow: hidden;
   /* はみ出し防止 */
+  transform-origin: center;
+  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+.project-link {
+  color: inherit;
+  display: block;
+}
+
+.project-link:nth-of-type(odd) .top-button-explore {
+  transform: rotate(-1.5deg);
+}
+
+.project-link:nth-of-type(even) .top-button-explore {
+  transform: rotate(1.5deg);
+}
+
+.project-link:hover .top-button-explore,
+.project-link:focus-visible .top-button-explore {
+  border-color: #091420;
+  box-shadow: 0 8px 18px rgba(9, 20, 32, 0.08);
+  transform: rotate(0deg) translateY(-4px);
 }
 
 .project-title {
