@@ -16,7 +16,7 @@ const labels = {
     },
     en: {
         timeline: 'Timeline',
-        role: 'Role',
+        role: 'Team',
         tools: 'Tools',
         discipline: 'Field',
         notFound: 'Project not found',
