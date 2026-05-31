@@ -55,12 +55,15 @@ export const projectTranslations = {
           ],
         },
         {
-          heading: 'Background and Role',
-          body: 'This work was created as part of my master\'s research on designing collaborative learning experiences for social groups including children in museums. I designed an AR experience that encourages visitors to learn collaboratively. After interviewing Professor Ritsuko Kikusawa, a researcher at the National Museum of Ethnology, and linguist Professor Tomoko Tatsumi, I defined the concept and individually handled UX design, UI design, software development, and workshop design.',
+          heading: 'Publication and Team',
+          body: 'This work was developed as a mobile AR guide system that supports collaborative interaction among parents, children, and museum specimens. It was published at IDC 2024 as "Talkative Museum: Augmented Reality Interactive Museum Guide System Towards Collaborative Child-Parent-Specimen Interaction" by Kihiro Tokuno, Fusako Kusunoki, Shigenori Inagaki, and Hiroshi Mizoguchi. The prototype focuses on creating dialogue with exhibits while also prompting exploration and conversation between parents and children.',
         },
         {
-          heading: 'Outcome',
-          body: 'Introducing an AR-based conversational exhibition system significantly improved the visitor experience. Direct dialogue with exhibits made it possible to provide flexible information based on each visitor\'s interests and helped encourage children\'s self-directed motivation to learn. The system also materialized the experience as a digital charm, creating a mechanism for continued learning after the visit. In the evaluation, 93% of participants answered that they discovered something new through the experience, and understanding of the exhibits improved by about 40% compared with conventional methods.',
+          heading: 'Evaluation',
+          body: 'Preliminary user tests at the National Museum of Ethnology indicated positive responses to the app\'s usability and the collaborative aspects of the museum experience. Analysis of questionnaire responses and observational data suggests that the prototype can support visitor engagement, collaborative learning, and the discovery of new knowledge.',
+        },
+        {
+          heading: 'References',
         },
       ],
       links: [
@@ -71,7 +74,7 @@ export const projectTranslations = {
     'listen-to-your-neighbors': {
       title: 'An experiment for listening to the sounds of microorganisms',
       titleshort: 'Listen to Your Neighbors',
-      team: 'Kihiro Tokuno',
+      team: 'ssmtat, Ohira Mai, Sano Fushi, Shichi Tomomi, Tokuno Kihiro, nakanokana, Hiramatsu Mamoru',
       sections: [
         {
           heading: 'Concept',

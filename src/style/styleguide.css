@@ -321,6 +321,18 @@
   font-weight: 600;
 }
 
+.works .reference-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding-left: 1.25em;
+}
+
+.works .reference-list li {
+  overflow-wrap: anywhere;
+}
+
 .works .image {
   align-self: stretch;
   height: 360px;

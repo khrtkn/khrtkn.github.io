@@ -1,3 +1,34 @@
+const talkativeMuseumReferences = [
+  'Hooper-Greenhill, E. 2006. Studying visitors. In S. Macdonald (Ed.), A Companion to Museum Studies. Blackwell, 362-376.',
+  'Andre, L., Durksen, T., and Volman, M. L. 2017. Museums as avenues of learning for children: a decade of research. Learning Environments Research 20, 47-76. https://doi.org/10.1007/s10984-016-9222-9',
+  'Kupiec, K., Malmberg, L.-E., and Mathers, S. 2023. The Effectiveness of Museum Intervention on Parent-Child Conversations: A Meta-Analysis. Visitor Studies 26(1), 82-101.',
+  'Yates, E., Szenasi, J., Smedley, A., Glynn, K., and Hemmings, M. 2022. Children as experiencers: Increasing engagement, participation and inclusion for young children in the museum. Childhood 29(1), 58-74. https://doi.org/10.1177/09075682211064429',
+  'Gerven, V. D., Land-Zandstra, A., and Damsma, W. 2018. Authenticity matters: Children look beyond appearances in their appreciation of museum objects. International Journal of Science Education, Part B 8(4), 325-339. https://doi.org/10.1080/21548455.2018.1497218',
+  'Azuma, R., Baillot, Y., Behringer, R., Feiner, S., Julier, S., and MacIntyre, B. 2001. Recent Advances in Augmented Reality. IEEE Computer Graphics and Applications 21(6), 34-47. https://doi.org/10.1109/38.963459',
+  'Perry, S. E., Roussou, M., Mirashrafi, S., Katifori, A., and McKinney, S. 2019. Shared digital experiences supporting collaborative meaning-making at heritage sites.',
+  'Katifori, A., Perry, S., Vayanou, M., Pujol, L., Chrysanthi, A., Kourtis, V., and Ioannidis, Y. 2016. Cultivating mobile-mediated social interaction in the museum: towards group-based digital storytelling experiences. Museums and the Web 2016.',
+  'Moorhouse, N., tom Dieck, M. C., and Jung, T. 2019. An experiential view to children learning in museums with augmented reality. Museum Management and Curatorship 34(4), 402-418. https://doi.org/10.1080/09647775.2019.1578991',
+  'Koumpouros, Y. 2024. Revealing the true potential and prospects of augmented reality in education. Smart Learning Environments 11. https://doi.org/10.1186/s40561-023-00288-0',
+  'Radu, I., Joy, T., Bowman, Y., Bott, I., and Schneider, B. 2021. A survey of needs and features for augmented reality collaborations in collocated spaces. Proceedings of the ACM on Human-Computer Interaction 5(CSCW1), Article 169. https://doi.org/10.1145/3449243',
+  'Queiroz, A. C. M., Tori, R., Nascimento, A. M., and Leme, M. I. da S. 2018. Augmented and virtual reality in education: the role of Brazilian research groups. 20th Symposium on Virtual and Augmented Reality, 170-175. https://doi.org/10.1109/SVR.2018.00034',
+  'Hirsh-Pasek, K., and Golinkoff, R. M. 2008. Why Play = Learning. Encyclopedia on Early Childhood Development.',
+  'Behrendt, M., and Franklin, T. 2014. A Review of Research on School Field Trips and Their Value in Education. International Journal of Environmental and Science Education 9, 235-245. https://doi.org/10.12973/ijese.2014.213a',
+  'Katifori, A., Kourtis, V., Perry, S., Pujol, L., Vayanou, M., and Chrysanthi, A. 2016. Cultivating mobile mediated social interaction in the museum: Towards group-based digital storytelling experiences. Museums and the Web 2016.',
+  'Roussou, M., and Katifori, A. 2018. Flow, Staging, Wayfinding, Personalization: Evaluating User Experience with Mobile Museum Narratives. Multimodal Technologies and Interaction 2(2), 32. https://doi.org/10.3390/mti2020032',
+  'Breuss-Schneeweis, P. 2016. The speaking celt: augmented reality avatars guide through a museum - case study. UbiComp 2016 Adjunct, 1484-1491. https://doi.org/10.1145/2968219.2974044',
+  'Olim, S. M. C., Nisi, V., and Rubegni, E. 2022. Periodic Fable Augmenting Chemistry with Technology, Characters and Storytelling. IDC 2022, 123-136. https://doi.org/10.1145/3501712.3534092',
+  'Perry, S., Roussou, M., Mirashrafi, S., Katifori, A., and McKinney, S. 2019. Shared Digital Experiences Supporting Collaborative Meaning-Making at Heritage Sites.',
+  'Polinsky, N., Andrus, B., Horn, M., and Uttal, D. 2021. Symbolic Relations in Collaborative Coding: How Children and Parents Map Across Symbol Systems While Coding Robots. IDC 2021, 294-304. https://doi.org/10.1145/3459990.3460713',
+  'Bower, M., Howe, C., McCredie, N., Robinson, A., and Grover, D. 2014. Augmented reality in Education - Cases, places, and potentials. Educational Media International 51. https://doi.org/10.1080/09523987.2014.889400',
+  'Dunleavy, M., and Dede, C. 2014. Augmented Reality Teaching and Learning. Handbook of Research on Educational Communications and Technology, 735-745. https://doi.org/10.1007/978-1-4614-3185-5_59',
+  'Klopfer, E., and Squire, K. 2008. Environmental Detectives - the development of an augmented reality platform for environmental simulations. Educational Technology Research and Development 56, 203-228. https://doi.org/10.1007/s11423-007-9037-6',
+  'Morrison, A., Oulasvirta, A., Peltonen, P., Lemmela, S., Jacucci, G., Reitmayr, G., Nasanen, J., and Juustila, A. 2009. Like bees around the hive: a comparative study of a mobile augmented reality map. CHI 2009, 1889-1898. https://doi.org/10.1145/1518701.1518991',
+];
+
+const talkativeMuseumReferencesHtml = `<ol class="reference-list">${talkativeMuseumReferences
+  .map((reference) => `<li>${reference}</li>`)
+  .join('')}</ol>`;
+
 export const projects = [
   {
     slug: 'modoru-mirai-ya',
@@ -82,12 +113,12 @@ export const projects = [
       },
       {
         heading: '制作の背景・体制',
-        body: '本作品は修士研究「博物館におけるこどもを含む社会集団のための協働学習体験デザイン」の一環として、来館者に協働的な学習を促すためのAR体験デザインを行いました。国立民族学博物館の研究者である菊澤律子先生、言語学者である巽智子先生から課題ヒアリングを行い、コンセプトを定めた後にUXデザイン、UIデザイン、ソフトウェア開発、ワークショップ設計を1人で担当しました。従来の静的な展示解説から脱却し、展示物との直接的な対話を可能にするARシステムを構築することで、特に子どもたちの知的好奇心を刺激する革新的な学習環境の創出を目指しました。',
+        body: '本作品は、親子と展示物の協働的な関わりを促すモバイルARガイドシステムとして制作しました。論文「Talkative Museum: Augmented Reality Interactive Museum Guide System Towards Collaborative Child-Parent-Specimen Interaction」として、Kihiro Tokuno、Fusako Kusunoki、Shigenori Inagaki、Hiroshi Mizoguchi により IDC 2024 で発表されています。プロトタイプでは、展示物との対話、親子間の探索、会話のきっかけを同時に生み出すことを重視しました。',
         images: ['/assets/TalkingMuseum/image1.jpeg', '/assets/TalkingMuseum/image2.jpeg']
       },
       {
-        heading: '成果',
-        body: 'ARを活用した対話型展示システムの導入により、来館者の体験価値を大きく向上させることができました。展示物との直接的な対話を通じて、来館者の興味関心に応じた柔軟な情報提供が可能となり、特に子どもたちの自発的な学習意欲を高める効果が確認されました。また、デジタルチャームという形で体験を物質化することで、来館後も継続的な学習効果を促進する仕組みを確立しました。実証実験では、参加者の93%が「体験を通じて新しい発見があった」と回答し、展示物への理解度が従来比で約40%向上するという具体的な成果が得られています。',
+        heading: '評価',
+        body: '国立民族学博物館での予備的なユーザーテストでは、アプリの使いやすさや、親子での協働的な鑑賞体験に対して肯定的な反応が得られました。質問紙と観察データの分析から、プロトタイプが来館者の関与、協働学習、新しい知識の発見を促す可能性が示されています。',
         images: [
           '/assets/TalkingMuseum/image3.jpeg',
           '/assets/TalkingMuseum/image4.jpeg',
@@ -98,6 +129,10 @@ export const projects = [
           '/assets/TalkingMuseum/image9.jpeg',
           '/assets/TalkingMuseum/image10.jpeg'
         ]
+      },
+      {
+        heading: '参考文献',
+        bodyHtml: talkativeMuseumReferencesHtml
       }
     ],
     links: [
@@ -111,7 +146,7 @@ export const projects = [
     titleshort: 'Listen to Your Neighbors',
     timeline: '2024',
     year: '2024',
-    team: '徳野稀太',
+    team: 'ssmtat、大平麻以、佐野風史、志智友海、Tokuno Kihiro、なかのかな、平松守瑠',
     tools: 'JavaScript, Web Audio API',
     discipline: 'Sound Design, Data Sonification, Bio Art',
     imageHeader: ['/assets/Neighbors/imageHeader.jpeg'],
