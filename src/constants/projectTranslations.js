@@ -32,12 +32,31 @@ export const projectTranslations = {
       team: 'Kihiro Tokuno',
       sections: [
         {
-          heading: 'Purpose and Intent',
-          body: 'This work was created as part of my master\'s research on designing collaborative learning experiences for social groups including children in museums. I designed an AR experience that encourages visitors to learn collaboratively. After interviewing Professor Ritsuko Kikusawa, a researcher at the National Museum of Ethnology, and linguist Professor Tomoko Tatsumi, I defined the concept and individually handled UX design, UI design, software development, and workshop design. By moving beyond static exhibition explanations and building an AR system that enables direct dialogue with exhibits, the project aimed to create an innovative learning environment that stimulates children\'s curiosity.',
+          heading: 'Future Vision',
+          body: [
+            'What kind of museum experience becomes possible when the boundary between the physical world and the virtual world starts to blur?',
+            'This question emerged while exploring ways to apply AR technology to museums. Talkative Museum was created as one constructive exploration within my master\'s research.'
+          ],
         },
         {
-          heading: 'Challenges',
-          body: 'Digital support using mobile devices has increasingly been introduced into museums, but it can also interfere with interaction between people. Balancing digital tools with interpersonal communication was a key issue, especially in collaborative learning for social groups that include children. At the National Museum of Ethnology in Osaka, where the exhibition route spans roughly 5 km and includes more than 12,000 objects, there was also a need for new exhibition methods that could effectively communicate the ingenuity of Oceanian navigation, agriculture, and everyday life.',
+          heading: 'Devices That Become Too Personal',
+          body: [
+            'In traditional museum exhibitions, protecting valuable objects often limits direct interaction between visitors and exhibits. This can make it difficult to capture children\'s interest and does not fully respond to the growing demand for interactive experiences.',
+            'Many museums have introduced augmented reality through mobile devices, making exhibitions easier to understand and access by layering digital information over objects. However, mobile devices are highly personal, and their use can also interfere with social interaction between visitors. Many AR experiences are still designed for individual use and do not sufficiently consider group experiences.',
+            'Museum visitors build meaning by using one another as resources for information, shared beliefs, and interpretation. Encouraging conversation and collaboration within a group can greatly improve learning. The project therefore explores a balance between interaction with exhibits and social interaction among visitors.'
+          ],
+        },
+        {
+          heading: 'Oceania Exhibition',
+          body: [
+            'The field was the Oceania exhibition at the National Museum of Ethnology, a rich exhibition space centered on an Oceanian canoe and surrounded by masks.',
+            'I saw the museum experience as a process in which visitors become interested, actively gather information, connect knowledge, and share it with others. To support collaborative observation, the AR presentation changes according to the stage of observation: immersive AR for gaining interest, complementary AR for exploration, and non-immersive AR for knowledge gathering.',
+            'Because people are diverse, the design uses differences in interests, height, age, and viewing position as resources for collaborative observation. Individual differences in what each person notices are reflected back into the exploration experience.'
+          ],
+        },
+        {
+          heading: 'Background and Role',
+          body: 'This work was created as part of my master\'s research on designing collaborative learning experiences for social groups including children in museums. I designed an AR experience that encourages visitors to learn collaboratively. After interviewing Professor Ritsuko Kikusawa, a researcher at the National Museum of Ethnology, and linguist Professor Tomoko Tatsumi, I defined the concept and individually handled UX design, UI design, software development, and workshop design.',
         },
         {
           heading: 'Outcome',
@@ -47,6 +66,37 @@ export const projectTranslations = {
       links: [
         { text: 'View detailed PDF >', href: 'https://drive.google.com/file/d/1mf3qXGPMJtWUCAJIxdM5Yxafjz6Q2YE7/view?usp=sharing' },
         { text: 'View published paper >', href: 'https://dl.acm.org/doi/10.1145/3628516.3659389' },
+      ],
+    },
+    'listen-to-your-neighbors': {
+      title: 'An experiment for listening to the sounds of microorganisms',
+      titleshort: 'Listen to Your Neighbors',
+      team: 'Kihiro Tokuno',
+      sections: [
+        {
+          heading: 'Concept',
+          body: [
+            'This work focuses on the most numerous microorganisms living in each space and converts their characteristics into sounds people can hear. The aim is to make the presence of small forms of life sharing our everyday environments more tangible.',
+            'The sound generation uses the taxonomic naming system assigned to each microorganism. Biological organisms are classified by ranks such as kingdom, phylum, class, order, family, genus, and species. By mapping these ranks to sonic properties, the system generates a sound unique to each microorganism.'
+          ],
+        },
+        {
+          heading: 'Sampling Sites',
+          body: [
+            'The biological data used in Listen to Your Neighbors was collected at CCBT and its surroundings. Samples were taken from locations such as the carpet in the back room, the underside of a stainless-steel trash-can lid, stair bricks, entrance wallpaper, a stuffed toy at reception, and leaves in the courtyard.',
+            'Each location contained very different kinds and quantities of microorganisms. The sounds in the experiment are generated from this environmental microbial data, giving each place its own audible character.'
+          ],
+        },
+        {
+          heading: 'Converting Data Into Sound',
+          body: [
+            'The project assigns indices to class and genus, then represents the surveyed microorganisms as two-dimensional vectors. The x value, genus, is mapped to pitch, and the y value, class, is mapped to the type of audio effect.',
+            'This creates sounds with the same pitch but different effects, or the same effect at different pitches. Because class indicates evolutionary roots, using it as an effect parameter can express structural differences and evolutionary distance through sound. Read counts from DNA sequencing are reflected as layers of sound.'
+          ],
+        },
+      ],
+      links: [
+        { text: 'Open the listening experiment >', href: '/experiment/' },
       ],
     },
     'interactive-museum': {

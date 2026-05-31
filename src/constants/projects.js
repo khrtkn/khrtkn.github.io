@@ -45,26 +45,105 @@ export const projects = [
     discipline: 'HCI, XR, Interaction Design',
     imageHeader: ['/assets/TalkingMuseum/imageHeader.jpeg'],
     imageBanner: ['/assets/TalkingMuseum/imageBanner.jpeg'],
+    videoEmbeds: [
+      {
+        title: 'Talkative Museum demo',
+        src: 'https://www.youtube.com/embed/QBvE1VTsdJA'
+      }
+    ],
     sections: [
       {
-        heading: '作品制作の目的・意図',
-        body: '本作品は修士研究「博物館におけるこどもを含む社会集団のための協働学習体験デザイン」の一環として、来館者に協働的な学習を促すためのAR体験デザインを行いました。国立民族学博物館の研究者である菊澤律子先生、言語学者である巽智子先生から課題ヒアリングを行い、コンセプトを定めた後にUXデザイン、UIデザイン、ソフトウェア開発、ワークショップ設計を1人で担当しました。従来の静的な展示解説から脱却し、展示物との直接的な対話を可能にするARシステムを構築することで、特に子どもたちの知的好奇心を刺激する革新的な学習環境の創出を目指しました。',
-        images: ['/assets/TalkingMuseum/image1.jpeg']
+        heading: '描いた未来',
+        body: [
+          '物理世界と仮想世界の境目が曖昧になったとき、博物館はどのような体験になるのだろうか？',
+          'これは、AR技術を博物館に適応する手法を模索する中で、生まれた問い。そんな問いに対し、修士研究の中の1つのプロジェクトの中で、構成論的に模索した結果、生まれた作品です。'
+        ],
+        images: [
+          '/assets/TalkingMuseum/legacy/ttm_mock.jpg',
+          '/assets/TalkingMuseum/legacy/ttm_charm.jpg',
+          '/assets/TalkingMuseum/legacy/ttm_main.jpg'
+        ],
+        imageMode: 'natural'
       },
       {
-        heading: '課題',
-        body: '近年、モバイル端末を用いたデジタル支援の博物館への導入が進んでいますが、人と人との相互作用を妨げる側面も指摘されています。特に、子どもを含む社会集団での協働学習において、デジタル機器の活用と人との交流のバランスが課題となっていました。また、大阪にある順路歩行距離5kmの国立民族学博物館では、12,000点にも及ぶ展示物の中から、オセアニアの人々の発達した航海術や農耕技術など、工夫を凝らした生活様式を効果的に伝える新しい展示手法が求められていました。',
-        images: ['/assets/TalkingMuseum/image2.jpeg']
+        heading: 'パーソナルすぎるデバイスたち',
+        bodyHtml: '博物館の伝統的な展示方法では、貴重な展示物の保護が優先され、<strong>来館者との直接的な相互作用が制限</strong>されてきた。このアプローチは、特に子供たちの興味を引くことを難しくし、近年のインタラクティブな体験への需要増加に十分に応えられていない。<br><br>これらの課題に対応するため、多くの博物館が拡張現実（AR）技術の導入を進めている。AR技術は、モバイル端末を通じて展示物にデジタル情報を重ねることで、より理解しやすく、アクセスしやすい展示を実現している。この技術により、<strong>来館者は展示物とより深く関わる</strong>ことができるようになっている。<br><br><strong>しかし</strong>、AR技術の導入は新たな課題も生み出している。パーソナルな特性を持つモバイル端末の使用により、<strong>来館者同士の社会的相互作用が阻害される</strong>可能性がある。さらに、開発される体験の多くが個人利用を前提としており、集団での体験を考慮していないものが多いことが現状。<br><br>この状況は、博物館体験における重要な側面を見落としている可能性がある。来館者は情報、共有された信念、意味の構築のために互いを利用する。グループ内での会話/協働を促進することは、博物館での利用者の学習体験を大きく向上させる可能性を持つ。<br><br>したがって、AR技術がもたらす個人と展示品との相互作用の強化と、来館者同士の社会的相互作用のバランスを慎重に考慮する必要がある。博物館本来の社会的学習の場としての機能を強化することができる。<strong>展示とのインタラクションと社会的相互作用のバランス</strong>を取ることで、より豊かで効果的な博物館体験が見えてくるのではないだろうか。',
+        images: [
+          '/assets/TalkingMuseum/legacy/ttm_bg2.jpg',
+          '/assets/TalkingMuseum/legacy/ttm_bg.jpg'
+        ],
+        imageMode: 'natural'
+      },
+      {
+        heading: 'オセアニア展示',
+        bodyHtml: 'フィールドは、<a href="https://www.minpaku.ac.jp/" target="_blank" rel="noreferrer">国立民族学博物館</a>にご協力いただき、その中のオセアニア展示とした。オセアニアカヌーを中心に、仮面がずらりと並ぶ素敵な展示空間。<br><br>博物館体験は、興味を持ち、主体的に情報を収集し、知識を結びつけ、他の人に共有するプロセスだと思う。この過程においてARをいつ、どのように使うか考えた時、観察の段階によってARの提示情報を切り替えることで、協力観察を促す方法を考えた。3つの段階に分けて定義した：<br><br>興味獲得: 「没入AR」 → 探索: 「補完的AR」 → 知識収集: 「非没入AR」<br><br>ヒトは多様であるため、集団観察を促す場合には、この多様性をうまく使えば活かしたいと考えた。そこで、興味の違い、身長の差、年齢の違いなどから、個々が観察する場所が異なることを活かし、探索体験に反映させた。',
+        images: ['/assets/TalkingMuseum/legacy/ttm_bg5.jpg'],
+        imageMode: 'natural'
+      },
+      {
+        heading: '制作の背景・体制',
+        body: '本作品は修士研究「博物館におけるこどもを含む社会集団のための協働学習体験デザイン」の一環として、来館者に協働的な学習を促すためのAR体験デザインを行いました。国立民族学博物館の研究者である菊澤律子先生、言語学者である巽智子先生から課題ヒアリングを行い、コンセプトを定めた後にUXデザイン、UIデザイン、ソフトウェア開発、ワークショップ設計を1人で担当しました。従来の静的な展示解説から脱却し、展示物との直接的な対話を可能にするARシステムを構築することで、特に子どもたちの知的好奇心を刺激する革新的な学習環境の創出を目指しました。',
+        images: ['/assets/TalkingMuseum/image1.jpeg', '/assets/TalkingMuseum/image2.jpeg']
       },
       {
         heading: '成果',
         body: 'ARを活用した対話型展示システムの導入により、来館者の体験価値を大きく向上させることができました。展示物との直接的な対話を通じて、来館者の興味関心に応じた柔軟な情報提供が可能となり、特に子どもたちの自発的な学習意欲を高める効果が確認されました。また、デジタルチャームという形で体験を物質化することで、来館後も継続的な学習効果を促進する仕組みを確立しました。実証実験では、参加者の93%が「体験を通じて新しい発見があった」と回答し、展示物への理解度が従来比で約40%向上するという具体的な成果が得られています。',
-        images: ['/assets/TalkingMuseum/image3.jpeg', '/assets/TalkingMuseum/image4.jpeg', '/assets/TalkingMuseum/image5.jpeg', '/assets/TalkingMuseum/image6.jpeg']
+        images: [
+          '/assets/TalkingMuseum/image3.jpeg',
+          '/assets/TalkingMuseum/image4.jpeg',
+          '/assets/TalkingMuseum/image5.jpeg',
+          '/assets/TalkingMuseum/image6.jpeg',
+          '/assets/TalkingMuseum/image7.jpeg',
+          '/assets/TalkingMuseum/image8.jpeg',
+          '/assets/TalkingMuseum/image9.jpeg',
+          '/assets/TalkingMuseum/image10.jpeg'
+        ]
       }
     ],
     links: [
       { text: '詳細資料(PDF)はこちら　＞', href: 'https://drive.google.com/file/d/1mf3qXGPMJtWUCAJIxdM5Yxafjz6Q2YE7/view?usp=sharing' },
       { text: '出版された論文はこちら　＞', href: 'https://dl.acm.org/doi/10.1145/3628516.3659389' }
+    ]
+  },
+  {
+    slug: 'listen-to-your-neighbors',
+    title: '微生物の音を、\n聴き分ける実験',
+    titleshort: 'Listen to Your Neighbors',
+    timeline: '2024',
+    year: '2024',
+    team: '徳野稀太',
+    tools: 'JavaScript, Web Audio API',
+    discipline: 'Sound Design, Data Sonification, Bio Art',
+    imageHeader: ['/assets/Neighbors/imageHeader.jpeg'],
+    imageBanner: ['/assets/Neighbors/imageBanner.jpeg'],
+    sections: [
+      {
+        heading: 'コンセプト',
+        body: [
+          '本作品では、それぞれの空間に住まう最も数が多い微生物に着目し、その特徴を人が聞くことができる音に変換することで、わたしたちと同じ空間を生きる小さな「命」の存在を実感できるようにすることを試みました。微生物の特徴を音に変換する際に用いたのが、各微生物に与えられた分類学上の命名法です。生物は「界」「門」「綱」「目」「科」「属」「種」という階級によって分類され、この分類階級に音の性質を対応させることで、各微生物固有の音を生成しました。',
+          'この実験では、異なる環境を表現した音を聴き、それらが同じ環境からのものか、異なる環境からのものかを判断します。聴覚を通じて、目には見えない環境の違いに触れるための実験です。'
+        ],
+        images: ['/assets/Neighbors/image1.jpeg', '/assets/Neighbors/image2.jpeg']
+      },
+      {
+        heading: '採集場所について',
+        body: [
+          '「Listen to Your Neighbors」で使用されている生物データは、CCBTとその周辺で採取されました。「右奥の部屋の床のカーペット」「ステンレスのゴミ箱の蓋の裏」「階段のレンガ」「会場入り口の壁紙」「受付のぬいぐるみ」「中庭の植木の葉」を、専用の綿棒でそれぞれ3分間拭い、得られたサンプルを解析サービスを通じて遺伝子情報に変換しました。',
+          'それぞれの環境で見つかった微生物の種類や数は大きく異なっていました。実験で聴く音は、これらの環境に存在する微生物のデータを音に変換したものです。各環境には特有の「音の特徴」があります。'
+        ],
+        images: ['/assets/Neighbors/image3.jpeg', '/assets/Neighbors/image4.jpeg']
+      },
+      {
+        heading: 'データと音の変換方法',
+        body: [
+          '「綱」と「属」にインデックスを付与し、調査された微生物を二次元ベクトルの形式で表示しました。x値（属）を音のピッチに、y値（綱）を音のエフェクトの種類にマッピングしました。これにより、同じピッチで異なるエフェクトの音や、同じエフェクトで異なるピッチの音が生まれます。',
+          '「綱」は進化的なルーツの違いを示しており、これらをエフェクトの種類として表現することで、生物の進化的な「距離感」や構造的な違いを音で表現することが可能となりました。また、DNA配列を読み取ることができた量を示す「リード数」を、音の重なりとして反映させています。'
+        ],
+        images: ['/assets/Neighbors/image5.jpeg', '/assets/Neighbors/image6.jpeg']
+      }
+    ],
+    links: [
+      { text: '音声環境識別実験はこちら　＞', href: '/experiment/' }
     ]
   },
   {

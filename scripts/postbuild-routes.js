@@ -7,6 +7,7 @@ const indexFile = path.join(buildDir, 'index.html');
 const projectSlugs = [
   'modoru-mirai-ya',
   'TalkingMuseum',
+  'listen-to-your-neighbors',
   'interactive-museum',
   'lets-speak-with-hands',
   'finca',

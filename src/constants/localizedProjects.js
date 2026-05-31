@@ -6,10 +6,19 @@ const mergeProject = (project, translation = {}) => {
   return {
     ...project,
     ...translation,
-    sections: project.sections.map((section, index) => ({
-      ...section,
-      ...(translation.sections?.[index] || {}),
-    })),
+    sections: project.sections.map((section, index) => {
+      const translatedSection = translation.sections?.[index] || {};
+      const mergedSection = {
+        ...section,
+        ...translatedSection,
+      };
+
+      if (translatedSection.body && !translatedSection.bodyHtml) {
+        delete mergedSection.bodyHtml;
+      }
+
+      return mergedSection;
+    }),
     links: translation.links || project.links,
   };
 };

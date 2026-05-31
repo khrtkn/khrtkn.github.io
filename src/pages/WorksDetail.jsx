@@ -37,6 +37,24 @@ const WorksDetail = ({ language = 'ja' }) => {
 
     if (!project) return <div>{pageLabels.notFound}</div>;
 
+    const renderSectionBody = (section) => {
+        if (section.bodyHtml) {
+            return <div className='body-2 body-html' dangerouslySetInnerHTML={{ __html: section.bodyHtml }} />;
+        }
+
+        if (Array.isArray(section.body)) {
+            return (
+                <div className='body-2 body-copy'>
+                    {section.body.map((paragraph, idx) => (
+                        <p key={idx}>{paragraph}</p>
+                    ))}
+                </div>
+            );
+        }
+
+        return <p className='body-2'>{section.body}</p>;
+    };
+
     return (
         <div className='works'>
             <Header language={language} />
@@ -96,13 +114,28 @@ const WorksDetail = ({ language = 'ja' }) => {
                     </div>
                 </div>
 
+                {project.videoEmbeds && (
+                    <div className='video-grid'>
+                        {project.videoEmbeds.map((video) => (
+                            <div className='video-frame' key={video.src}>
+                                <iframe
+                                    src={video.src}
+                                    title={video.title}
+                                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                                    allowFullScreen
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 <div className='div-2'>
                     {project.sections.map((section, index) => (
                         <div key={index} className='container-info-sub'>
                             <h2 className='heading-3'>{section.heading}</h2>
-                            <p className='body-2'>{section.body}</p>
+                            {renderSectionBody(section)}
                             {section.images && (
-                                <div className='image-grid'>
+                                <div className={`image-grid ${section.imageMode === 'natural' ? 'image-grid--natural' : ''}`}>
                                     {section.images.map((image, idx) => {
                                         return (
                                             <img
