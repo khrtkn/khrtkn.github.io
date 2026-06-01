@@ -31,6 +31,8 @@ const renderValue = (value) => {
     return value || '';
 };
 
+const normalizeHref = (href) => href.replace(/\u2011/g, '-');
+
 const renderInlineText = (text, keyPrefix) => {
     const nodes = [];
     const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -43,7 +45,7 @@ const renderInlineText = (text, keyPrefix) => {
         }
 
         nodes.push(
-            <a key={`${keyPrefix}-link-${match.index}`} href={match[2]} target='_blank' rel='noreferrer'>
+            <a key={`${keyPrefix}-link-${match.index}`} href={normalizeHref(match[2])} target='_blank' rel='noreferrer'>
                 {match[1]}
             </a>
         );

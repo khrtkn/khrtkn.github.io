@@ -324,11 +324,26 @@
 
 .works .body-html a,
 .works .body-copy a,
-.works .markdown-body a {
-  color: #091420;
+.works .markdown-body a,
+.works .reference-list a {
+  color: #000099;
   overflow-wrap: anywhere;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.works .body-html a:hover,
+.works .body-copy a:hover,
+.works .markdown-body a:hover,
+.works .reference-list a:hover {
+  color: #E25100;
+}
+
+.works .body-html a:visited,
+.works .body-copy a:visited,
+.works .markdown-body a:visited,
+.works .reference-list a:visited {
+  color: #8B008B;
 }
 
 .works .body-html strong {
