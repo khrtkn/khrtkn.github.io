@@ -398,16 +398,12 @@
 .works .top-button-explore {
   width: 170px;
   height: 170px;
-  /* 必要に応じて、アスペクト比を強制したい場合 */
   aspect-ratio: 1 / 1;
   background-color: #ffffff;
   border: 0.5px solid #abb6c4;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  /* はみ出し防止 */
-  transform-origin: center;
-  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
 }
 
 .project-link {
@@ -415,19 +411,8 @@
   display: block;
 }
 
-.project-link:nth-of-type(odd) .top-button-explore {
-  transform: rotate(-1.5deg);
-}
-
-.project-link:nth-of-type(even) .top-button-explore {
-  transform: rotate(1.5deg);
-}
-
-.project-link:hover .top-button-explore,
-.project-link:focus-visible .top-button-explore {
-  border-color: #091420;
-  box-shadow: 0 8px 18px rgba(9, 20, 32, 0.08);
-  transform: rotate(0deg) translateY(-4px);
+.works .top-button-explore:hover {
+  transform: translateX(-5px) translateY(-3px) rotateZ(-3deg);
 }
 
 .project-title {
